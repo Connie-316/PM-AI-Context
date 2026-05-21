@@ -1,0 +1,21 @@
+# Claude Code 本地配置（不上传）
+.claude/settings.local.json
+
+# macOS 系统文件
+.DS_Store
+
+# 依赖目录
+node_modules/
+
+# 构建产物
+dist/
+build/
+
+# 日志
+*.log
+npm-debug.log*
+
+# 压缩包
+*.zip
+*.tar
+*.gz
