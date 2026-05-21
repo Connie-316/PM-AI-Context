@@ -10,6 +10,13 @@
 | templates/ | 文档模板库（PRD/需求分析/会议纪要/上线检查清单） |
 | .claude/commands/ | Skills（AI 标准作业程序） |
 
+## 快速入口（你只需要看这两个）
+
+| 文件 | 什么时候看 |
+|------|---------|
+| [START_HERE.md](START_HERE.md) | 第一次用 / 忘了怎么用 |
+| [SKILL_GUIDE.md](SKILL_GUIDE.md) | 忘记了触发词 / 不知道用哪个 |
+
 ## Skill 优先规则
 
 收到任务后，先扫描 .claude/commands/ 是否有对应 Skill。
