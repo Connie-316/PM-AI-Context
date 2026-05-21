@@ -3,516 +3,528 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>打印标签与打单发货 - 完整页面交互 Demo</title>
+<title>打印标签与打单发货 - 商家端完整交互</title>
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #F5F5F5; min-height: 100vh; }
-  h1 { text-align: center; padding: 24px 20px 8px; font-size: 20px; color: #333; }
-  .subtitle { text-align: center; color: #888; font-size: 12px; margin-bottom: 20px; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #F5F5F5; min-height: 100vh; }
 
-  /* ===== PC后台整体布局 ===== */
-  .pc-layout { display: flex; min-height: 100vh; }
+h1 { text-align: center; padding: 20px 20px 8px; font-size: 18px; color: #333; }
+.subtitle { text-align: center; color: #888; font-size: 11px; margin-bottom: 16px; }
 
-  /* 顶部导航 */
-  .pc-topbar { height: 56px; background: #1A1A1A; display: flex; align-items: center; padding: 0 20px; gap: 24px; position: fixed; top: 0; left: 0; right: 0; z-index: 100; }
-  .pc-logo { font-size: 15px; font-weight: 600; color: #fff; margin-right: 20px; }
-  .pc-logo span { color: #FF7700; }
-  .pc-nav { display: flex; gap: 4px; flex: 1; }
-  .pc-nav-item { padding: 8px 16px; font-size: 13px; color: rgba(255,255,255,0.65); border-radius: 4px; cursor: pointer; transition: all 0.15s; }
-  .pc-nav-item:hover { background: rgba(255,255,255,0.1); color: #fff; }
-  .pc-nav-item.active { background: rgba(255,255,255,0.15); color: #fff; }
-  .pc-user { display: flex; align-items: center; gap: 12px; margin-left: auto; }
-  .pc-avatar { width: 32px; height: 32px; background: rgba(255,255,255,0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 14px; }
-  .pc-name { font-size: 13px; color: #fff; }
-  .pc-logout { font-size: 12px; color: rgba(255,255,255,0.45); cursor: pointer; }
+/* ===== PC后台整体布局 ===== */
+.pc-layout { display: flex; min-height: 100vh; }
 
-  /* 侧边菜单 */
-  .pc-sidebar { width: 200px; background: #1A1A1A; position: fixed; top: 56px; left: 0; bottom: 0; overflow-y: auto; flex-shrink: 0; }
-  .pc-menu-section { padding: 16px 0 8px; }
-  .pc-menu-title { font-size: 10px; color: rgba(255,255,255,0.35); text-transform: uppercase; letter-spacing: 1px; padding: 0 12px 8px; }
-  .pc-menu-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; font-size: 13px; color: rgba(255,255,255,0.65); cursor: pointer; border-left: 3px solid transparent; transition: all 0.15s; }
-  .pc-menu-item:hover { background: rgba(255,255,255,0.05); color: #fff; }
-  .pc-menu-item.active { color: #fff; background: rgba(22,100,255,0.2); border-left-color: #1664FF; }
-  .pc-menu-icon { width: 16px; height: 16px; background: rgba(255,255,255,0.2); border-radius: 3px; flex-shrink: 0; }
-  .pc-menu-item.active .pc-menu-icon { background: rgba(22,100,255,0.5); }
-  .pc-menu-badge { margin-left: auto; background: #1664FF; color: #fff; font-size: 10px; padding: 1px 6px; border-radius: 10px; }
+/* 顶部导航 */
+.pc-topbar { height: 56px; background: #1A1A1A; display: flex; align-items: center; padding: 0 16px; gap: 20px; position: fixed; top: 0; left: 0; right: 0; z-index: 100; }
+.pc-logo { font-size: 14px; font-weight: 600; color: #fff; }
+.pc-logo span { color: #FF7700; }
+.pc-nav { display: flex; gap: 2px; flex: 1; }
+.pc-nav-item { padding: 8px 14px; font-size: 13px; color: rgba(255,255,255,0.65); border-radius: 4px; cursor: pointer; transition: all 0.15s; }
+.pc-nav-item:hover { background: rgba(255,255,255,0.08); color: #fff; }
+.pc-nav-item.active { background: rgba(255,255,255,0.15); color: #fff; }
+.pc-user { display: flex; align-items: center; gap: 10px; margin-left: auto; }
+.pc-avatar { width: 30px; height: 30px; background: rgba(255,255,255,0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 13px; }
+.pc-name { font-size: 12px; color: #fff; }
 
-  /* 主内容区 */
-  .pc-content { flex: 1; margin-left: 200px; margin-top: 56px; padding: 20px; min-height: calc(100vh - 56px); }
+/* 侧边菜单 */
+.pc-sidebar { width: 190px; background: #1A1A1A; position: fixed; top: 56px; left: 0; bottom: 0; overflow-y: auto; flex-shrink: 0; }
+.pc-menu-section { padding: 14px 0 6px; }
+.pc-menu-title { font-size: 10px; color: rgba(255,255,255,0.35); text-transform: uppercase; letter-spacing: 1px; padding: 0 12px 6px; }
+.pc-menu-item { display: flex; align-items: center; gap: 10px; padding: 9px 12px; font-size: 13px; color: rgba(255,255,255,0.65); cursor: pointer; border-left: 3px solid transparent; transition: all 0.15s; }
+.pc-menu-item:hover { background: rgba(255,255,255,0.05); color: #fff; }
+.pc-menu-item.active { color: #fff; background: rgba(22,100,255,0.2); border-left-color: #1664FF; }
+.pc-menu-icon { width: 14px; height: 14px; background: rgba(255,255,255,0.15); border-radius: 2px; flex-shrink: 0; }
+.pc-menu-item.active .pc-menu-icon { background: rgba(22,100,255,0.5); }
+.pc-menu-badge { margin-left: auto; background: #1664FF; color: #fff; font-size: 10px; padding: 1px 6px; border-radius: 10px; }
 
-  /* ===== 页面导航Tab ===== */
-  .page-nav { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
-  .page-nav-btn { padding: 8px 16px; border-radius: 6px; font-size: 13px; cursor: pointer; border: none; background: #fff; color: #595959; border: 1px solid #D9D9D9; transition: all 0.15s; }
-  .page-nav-btn:hover { border-color: #1664FF; color: #1664FF; }
-  .page-nav-btn.active { background: #1664FF; color: #fff; border-color: #1664FF; }
+/* 主内容区 */
+.pc-content { flex: 1; margin-left: 190px; margin-top: 56px; padding: 16px; min-height: calc(100vh - 56px); }
 
-  /* ===== 页面容器 ===== */
-  .page-section { display: none; }
-  .page-section.active { display: block; }
+/* ===== 页面导航 ===== */
+.page-nav { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+.page-nav-btn { padding: 7px 14px; border-radius: 6px; font-size: 12px; cursor: pointer; border: none; background: #fff; color: #595959; border: 1px solid #D9D9D9; transition: all 0.15s; }
+.page-nav-btn:hover { border-color: #1664FF; color: #1664FF; }
+.page-nav-btn.active { background: #1664FF; color: #fff; border-color: #1664FF; }
 
-  /* ===== 页面标题栏 ===== */
-  .page-header { background: #fff; border-radius: 8px; padding: 16px 20px; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; }
-  .page-title { font-size: 15px; font-weight: 600; color: #333; }
-  .page-breadcrumb { font-size: 12px; color: #8C8C8C; margin-top: 4px; }
-  .page-actions { display: flex; gap: 10px; align-items: center; }
+/* 页面容器 */
+.page-section { display: none; }
+.page-section.active { display: block; }
 
-  /* ===== 统计卡片 ===== */
-  .stat-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px; }
-  .stat-card { background: #fff; border-radius: 8px; padding: 16px; }
-  .stat-num { font-size: 20px; font-weight: 700; color: #333; }
-  .stat-label { font-size: 12px; color: #8C8C8C; margin-top: 4px; }
-  .stat-card.orange .stat-num { color: #FF7700; }
-  .stat-card.blue .stat-num { color: #1664FF; }
+/* ===== 页面标题栏 ===== */
+.page-header { background: #fff; border-radius: 8px; padding: 14px 16px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; }
+.page-title-wrap { display: flex; align-items: center; gap: 10px; }
+.page-icon { font-size: 16px; }
+.page-title { font-size: 14px; font-weight: 600; color: #333; }
+.page-breadcrumb { font-size: 11px; color: #8C8C8C; margin-top: 2px; }
+.page-actions { display: flex; gap: 8px; align-items: center; }
+.page-badge-small { background: #E8F0FF; color: #1664FF; font-size: 10px; padding: 2px 8px; border-radius: 10px; }
 
-  /* ===== 筛选栏 ===== */
-  .filter-bar { background: #fff; border-radius: 8px; padding: 16px 20px; margin-bottom: 16px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
-  .filter-item { display: flex; align-items: center; gap: 8px; }
-  .filter-label { font-size: 13px; color: #595959; }
-  .filter-input { padding: 8px 12px; border: 1px solid #D9D9D9; border-radius: 4px; font-size: 13px; width: 160px; outline: none; }
-  .filter-input:focus { border-color: #1664FF; }
-  .filter-select { padding: 8px 12px; border: 1px solid #D9D9D9; border-radius: 4px; font-size: 13px; min-width: 120px; outline: none; color: #333; }
-  .filter-select:focus { border-color: #1664FF; }
-  .filter-btn { padding: 8px 16px; border-radius: 4px; font-size: 13px; cursor: pointer; border: none; transition: all 0.15s; }
-  .btn-primary { background: #1664FF; color: #fff; }
-  .btn-primary:hover { background: #1458DB; }
-  .btn-secondary { background: #fff; color: #595959; border: 1px solid #D9D9D9; }
-  .btn-secondary:hover { border-color: #1664FF; color: #1664FF; }
+/* ===== 统计卡片 ===== */
+.stat-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 12px; }
+.stat-card { background: #fff; border-radius: 8px; padding: 14px; }
+.stat-num { font-size: 18px; font-weight: 700; color: #333; }
+.stat-label { font-size: 11px; color: #8C8C8C; margin-top: 3px; }
+.stat-card.orange .stat-num { color: #FF7700; }
+.stat-card.blue .stat-num { color: #1664FF; }
 
-  /* ===== 数据表格 ===== */
-  .table-box { background: #fff; border-radius: 8px; overflow: hidden; }
-  .table-head { display: flex; padding: 12px 20px; background: #FAFAFA; border-bottom: 1px solid #E5E5E5; font-size: 12px; font-weight: 600; color: #595959; }
-  .th { flex: 1; display: flex; align-items: center; }
-  .th.w60 { flex: 0 0 60px; justify-content: center; }
-  .th.w80 { flex: 0 0 80px; justify-content: center; }
-  .th.w100 { flex: 0 0 100px; justify-content: center; }
-  .th.w120 { flex: 0 0 120px; justify-content: center; }
-  .th.checkbox-col { flex: 0 0 50px; justify-content: center; }
-  .th.op { flex: 0 0 120px; justify-content: center; }
+/* ===== 筛选栏 ===== */
+.filter-bar { background: #fff; border-radius: 8px; padding: 12px 16px; margin-bottom: 12px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.filter-item { display: flex; align-items: center; gap: 6px; }
+.filter-label { font-size: 12px; color: #595959; }
+.filter-input { padding: 7px 10px; border: 1px solid #D9D9D9; border-radius: 4px; font-size: 12px; width: 140px; outline: none; color: #333; }
+.filter-input:focus { border-color: #1664FF; }
+.filter-select { padding: 7px 10px; border: 1px solid #D9D9D9; border-radius: 4px; font-size: 12px; min-width: 110px; outline: none; color: #333; }
+.filter-select:focus { border-color: #1664FF; }
+.filter-btn { padding: 7px 14px; border-radius: 4px; font-size: 12px; cursor: pointer; border: none; transition: all 0.15s; }
+.btn-primary { background: #1664FF; color: #fff; }
+.btn-primary:hover { background: #1458DB; }
+.btn-secondary { background: #fff; color: #595959; border: 1px solid #D9D9D9; }
+.btn-secondary:hover { border-color: #1664FF; color: #1664FF; }
 
-  .tr { display: flex; padding: 14px 20px; border-bottom: 1px solid #F0F0F0; align-items: center; transition: background 0.15s; }
-  .tr:hover { background: #FAFAFA; }
-  .tr.selected { background: #E8F0FF; }
-  .tr.shipped { opacity: 0.6; background: #F5F5F5; }
-  .tr.shipped .goods-name { text-decoration: line-through; color: #8C8C8C; }
-  .td { flex: 1; font-size: 13px; color: #333; display: flex; align-items: center; }
-  .td.w60 { flex: 0 0 60px; justify-content: center; }
-  .td.w80 { flex: 0 0 80px; justify-content: center; }
-  .td.w100 { flex: 0 0 100px; justify-content: center; }
-  .td.w120 { flex: 0 0 120px; justify-content: center; }
-  .td.checkbox-col { flex: 0 0 50px; justify-content: center; }
-  .td.op { flex: 0 0 120px; justify-content: center; gap: 6px; }
-  .goods-name { font-weight: 500; }
-  .goods-meta { font-size: 11px; color: #8C8C8C; margin-top: 2px; }
-  .price { font-weight: 600; }
-  .subtotal { font-weight: 700; color: #F5222D; }
+/* ===== 数据表格 ===== */
+.table-box { background: #fff; border-radius: 8px; overflow: hidden; }
+.table-head { display: flex; padding: 10px 16px; background: #FAFAFA; border-bottom: 1px solid #E5E5E5; font-size: 12px; font-weight: 600; color: #595959; }
+.th { flex: 1; display: flex; align-items: center; }
+.th.check { flex: 0 0 46px; justify-content: center; }
+.th.op { flex: 0 0 100px; justify-content: center; }
+.th.op80 { flex: 0 0 80px; justify-content: center; }
+.th.op100 { flex: 0 0 100px; justify-content: center; }
+.th.op120 { flex: 0 0 120px; justify-content: center; }
+.th.right { justify-content: flex-end; }
+.th.center { justify-content: center; }
 
-  /* 复选框 */
-  .check-btn { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; cursor: pointer; border-radius: 4px; transition: all 0.15s; }
-  .check-btn:hover { background: #F0F0F0; }
-  .check-btn.checked .cb { background: #1664FF; border-color: #1664FF; }
-  .cb { width: 18px; height: 18px; border: 2px solid #D9D9D9; border-radius: 3px; background: #fff; display: block; transition: all 0.15s; }
-  .check-btn.checked .cb { background: #1664FF; border-color: #1664FF; }
-  .check-btn.checked .cb::after { content: ''; display: block; width: 9px; height: 5px; border-left: 2px solid #fff; border-bottom: 2px solid #fff; transform: rotate(-45deg) translateY(-1px); margin: 4px auto 0; }
-  .check-btn:hover .cb { border-color: #1664FF; }
-  .check-btn.disabled { opacity: 0.4; cursor: not-allowed; }
+.tr { display: flex; padding: 12px 16px; border-bottom: 1px solid #F0F0F0; align-items: center; transition: background 0.15s; }
+.tr:hover { background: #FAFAFA; }
+.tr.selected { background: #E8F0FF; }
+.tr.shipped { opacity: 0.55; background: #F5F5F5; }
+.tr.shipped .goods-name-cell { text-decoration: line-through; color: #8C8C8C; }
 
-  /* 状态标签 */
-  .status-tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 500; }
-  .status-green { background: #F6FFED; color: #52C41A; }
-  .status-blue { background: #E8F0FF; color: #1664FF; }
-  .status-orange { background: #FFF7E6; color: #FAAD14; }
-  .status-gray { background: #F5F5F5; color: #8C8C8C; }
-  .status-red { background: #FFF0F0; color: #F5222D; }
-  .shipped-tag { display: inline-block; padding: 1px 6px; border-radius: 3px; font-size: 10px; background: #F5F5F5; color: #8C8C8C; margin-left: 6px; }
+.td { flex: 1; font-size: 12px; color: #333; display: flex; align-items: center; }
+.td.check { flex: 0 0 46px; justify-content: center; }
+.td.op { flex: 0 0 100px; justify-content: center; gap: 4px; }
+.td.op80 { flex: 0 0 80px; justify-content: center; }
+.td.op100 { flex: 0 0 100px; justify-content: center; }
+.td.op120 { flex: 0 0 120px; justify-content: center; }
+.td.right { justify-content: flex-end; }
+.td.center { justify-content: center; }
+.td.bold { font-weight: 600; }
 
-  /* 操作按钮 */
-  .op-btn { font-size: 12px; color: #1664FF; background: transparent; border: none; cursor: pointer; padding: 4px 8px; border-radius: 4px; transition: all 0.15s; }
-  .op-btn:hover { background: #E8F0FF; }
-  .op-btn.danger { color: #F5222D; }
-  .op-btn.danger:hover { background: #FFF0F0; }
-  .op-btn.success { color: #52C41A; }
-  .op-btn.success:hover { background: #F6FFED; }
+.goods-name-cell { font-weight: 500; color: #333; }
+.goods-sub { font-size: 11px; color: #8C8C8C; margin-top: 1px; }
+.td.blue-link { color: #1664FF; font-size: 12px; }
+.td.gray { color: #8C8C8C; font-size: 12px; }
 
-  /* 底部固定栏 */
-  .fixed-bottom-bar { position: sticky; bottom: 0; background: #fff; border-top: 1px solid #E5E5E5; padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 -2px 8px rgba(0,0,0,0.04); z-index: 10; }
-  .fixed-bottom-left { display: flex; align-items: center; gap: 16px; }
-  .fixed-count { font-size: 13px; color: #333; }
-  .fixed-count .num { color: #1664FF; font-weight: 700; font-size: 15px; }
-  .sync-tip { font-size: 12px; color: #1664FF; display: flex; align-items: center; gap: 4px; background: #E8F0FF; padding: 4px 10px; border-radius: 4px; }
-  .fixed-bottom-right { display: flex; align-items: center; gap: 16px; }
-  .total-info { font-size: 13px; color: #595959; }
-  .total-amount { font-size: 18px; font-weight: 700; color: #F5222D; }
-  .fixed-actions { display: flex; gap: 10px; }
-  .btn { padding: 10px 20px; border-radius: 6px; font-size: 14px; font-weight: 500; cursor: pointer; border: none; transition: all 0.15s; }
-  .btn-pri { background: #1664FF; color: #fff; height: 40px; display: flex; align-items: center; gap: 6px; }
-  .btn-pri:hover { background: #1458DB; }
-  .btn-outline { background: #fff; color: #595959; border: 1px solid #D9D9D9; height: 40px; display: flex; align-items: center; gap: 6px; }
-  .btn-outline:hover { border-color: #1664FF; color: #1664FF; }
+/* 复选框 */
+.check-btn { width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; cursor: pointer; border-radius: 4px; transition: all 0.15s; }
+.check-btn:hover { background: #F0F0F0; }
+.check-btn.checked .cb { background: #1664FF; border-color: #1664FF; }
+.cb { width: 16px; height: 16px; border: 2px solid #D9D9D9; border-radius: 3px; background: #fff; display: block; transition: all 0.15s; }
+.check-btn.checked .cb { background: #1664FF; border-color: #1664FF; }
+.check-btn.checked .cb::after { content: ''; display: block; width: 8px; height: 4px; border-left: 2px solid #fff; border-bottom: 2px solid #fff; transform: rotate(-45deg) translateY(-1px); margin: 4px auto 0; }
+.check-btn:hover .cb { border-color: #1664FF; }
+.check-btn.disabled { opacity: 0.35; cursor: not-allowed; }
+.check-btn.disabled:hover { background: transparent; }
+.check-btn.disabled:hover .cb { border-color: #D9D9D9; }
 
-  /* ===== 弹窗 ===== */
-  .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.45); display: flex; align-items: center; justify-content: center; z-index: 1000; }
-  .modal-box { background: #fff; border-radius: 12px; width: 900px; max-width: 95%; max-height: 90vh; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 8px 32px rgba(0,0,0,0.2); }
-  .modal-head { padding: 16px 20px; background: #FAFAFA; border-bottom: 1px solid #E5E5E5; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
-  .modal-title { font-size: 15px; font-weight: 600; color: #333; }
-  .modal-head-right { display: flex; align-items: center; gap: 12px; }
-  .modal-close { width: 32px; height: 32px; border-radius: 4px; background: transparent; border: none; font-size: 20px; cursor: pointer; color: #999; display: flex; align-items: center; justify-content: center; }
-  .modal-close:hover { background: #f0f0f0; color: #666; }
+/* 操作按钮 */
+.op-btn { font-size: 11px; color: #1664FF; background: transparent; border: none; cursor: pointer; padding: 3px 6px; border-radius: 4px; transition: all 0.15s; white-space: nowrap; }
+.op-btn:hover { background: #E8F0FF; }
+.op-btn.danger { color: #F5222D; }
+.op-btn.danger:hover { background: #FFF0F0; }
+.op-btn.green { color: #52C41A; }
+.op-btn.green:hover { background: #F6FFED; }
+.op-btn.gray { color: #8C8C8C; }
+.op-btn.gray:hover { background: #F5F5F5; }
 
-  /* 弹窗Tab */
-  .modal-tabs { display: flex; padding: 12px 20px; border-bottom: 1px solid #F0F0F0; flex-shrink: 0; gap: 20px; }
-  .modal-tab { font-size: 13px; color: #8C8C8C; padding: 6px 0; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.15s; }
-  .modal-tab.active { color: #1664FF; font-weight: 600; border-bottom-color: #1664FF; }
-  .modal-tab:hover { color: #1664FF; }
-  .modal-tab .count { display: inline-block; background: #F0F0F0; border-radius: 10px; padding: 0 6px; font-size: 10px; margin-left: 4px; color: #595959; }
-  .modal-tab.active .count { background: #D4E8FF; color: #1664FF; }
-  .modal-actions { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+/* 状态标签 */
+.status-tag { display: inline-block; padding: 2px 7px; border-radius: 4px; font-size: 11px; font-weight: 500; white-space: nowrap; }
+.s-green { background: #F6FFED; color: #52C41A; }
+.s-blue { background: #E8F0FF; color: #1664FF; }
+.s-orange { background: #FFF7E6; color: #FAAD14; }
+.s-gray { background: #F5F5F5; color: #8C8C8C; }
+.s-red { background: #FFF0F0; color: #F5222D; }
+.shipped-tag { display: inline-block; padding: 1px 5px; border-radius: 3px; font-size: 10px; background: #F5F5F5; color: #8C8C8C; margin-left: 5px; }
 
-  /* 全选行 */
-  .select-row { display: flex; align-items: center; padding: 10px 20px; background: #FAFAFA; border-bottom: 1px solid #E5E5E5; flex-shrink: 0; }
-  .select-label-wrap { display: flex; align-items: center; cursor: pointer; padding: 4px; margin: -4px; border-radius: 4px; }
-  .select-label-wrap:hover .select-check { border-color: #1664FF; }
-  .select-check { width: 18px; height: 18px; border: 2px solid #D9D9D9; border-radius: 3px; background: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.15s; }
-  .select-check.checked { background: #1664FF; border-color: #1664FF; }
-  .select-check.checked::after { content: ''; width: 9px; height: 5px; border-left: 2px solid #fff; border-bottom: 2px solid #fff; transform: rotate(-45deg) translateY(-1px); }
-  .select-label-text { font-size: 13px; color: #333; margin-left: 10px; }
-  .select-count-badge { font-size: 12px; color: #8C8C8C; background: #F0F0F0; border-radius: 10px; padding: 2px 10px; margin-left: 12px; }
+/* ===== 弹窗 ===== */
+.modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 200; }
+.modal-box { background: #fff; border-radius: 12px; width: 960px; max-width: 95%; max-height: 88vh; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 8px 32px rgba(0,0,0,0.2); }
 
-  /* 弹窗列表 */
-  .modal-list { flex: 1; overflow-y: auto; padding: 0 0 60px; }
-  .modal-list::-webkit-scrollbar { width: 6px; }
-  .modal-list::-webkit-scrollbar-track { background: transparent; }
-  .modal-list::-webkit-scrollbar-thumb { background: #D9D9D9; border-radius: 3px; }
+.modal-head { padding: 14px 20px; background: #FAFAFA; border-bottom: 1px solid #E5E5E5; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+.modal-title { font-size: 14px; font-weight: 600; color: #333; }
+.modal-head-right { display: flex; align-items: center; gap: 10px; }
+.modal-order-info { font-size: 11px; color: #8C8C8C; }
+.modal-close { width: 28px; height: 28px; border-radius: 4px; background: transparent; border: none; font-size: 18px; cursor: pointer; color: #999; display: flex; align-items: center; justify-content: center; }
+.modal-close:hover { background: #eee; color: #666; }
 
-  /* 弹窗底部 */
-  .modal-footer { padding: 14px 20px; border-top: 1px solid #E5E5E5; background: #fff; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
-  .modal-footer-left { display: flex; align-items: center; gap: 16px; }
-  .modal-footer-right { display: flex; gap: 10px; }
+/* Tab行 */
+.modal-tab-row { display: flex; align-items: center; padding: 10px 20px; border-bottom: 1px solid #F0F0F0; flex-shrink: 0; }
+.modal-tab { font-size: 12px; color: #8C8C8C; padding: 5px 0; cursor: pointer; border-bottom: 2px solid transparent; margin-right: 18px; transition: all 0.15s; }
+.modal-tab.active { color: #1664FF; font-weight: 600; border-bottom-color: #1664FF; }
+.modal-tab:hover { color: #1664FF; }
+.modal-tab .cnt { display: inline-block; background: #F0F0F0; border-radius: 8px; padding: 0 5px; font-size: 10px; margin-left: 3px; color: #595959; }
+.modal-tab.active .cnt { background: #D4E8FF; color: #1664FF; }
+.modal-right-actions { margin-left: auto; display: flex; align-items: center; gap: 8px; }
 
-  /* 反选按钮 */
-  .reverse-btn { display: flex; align-items: center; gap: 4px; font-size: 12px; color: #1664FF; background: transparent; border: none; cursor: pointer; padding: 6px 10px; border-radius: 4px; transition: all 0.15s; }
-  .reverse-btn:hover { background: #E8F0FF; }
-  .reverse-icon { font-size: 16px; }
+/* 反选按钮 */
+.reverse-btn { display: flex; align-items: center; gap: 4px; font-size: 11px; color: #1664FF; background: transparent; border: none; cursor: pointer; padding: 5px 9px; border-radius: 4px; transition: all 0.15s; }
+.reverse-btn:hover { background: #E8F0FF; }
+.reverse-icon { font-size: 14px; }
 
-  /* ===== 弹窗确认 ===== */
-  .confirm-modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.45); display: flex; align-items: center; justify-content: center; z-index: 1100; }
-  .confirm-box { background: #fff; border-radius: 12px; padding: 24px; width: 380px; max-width: 90%; }
-  .confirm-title { font-size: 16px; font-weight: 600; margin-bottom: 16px; }
-  .confirm-content { font-size: 13px; color: #595959; line-height: 1.8; margin-bottom: 20px; }
-  .confirm-content .item { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; color: #52C41A; }
-  .confirm-content .item .val { color: #1664FF; font-weight: 600; }
-  .confirm-content .warn { color: #FAAD14; font-size: 12px; margin-top: 8px; display: flex; align-items: flex-start; gap: 4px; }
-  .confirm-btns { display: flex; justify-content: flex-end; gap: 10px; }
-  .btn-cancel { padding: 8px 18px; border-radius: 6px; font-size: 13px; background: #fff; border: 1px solid #D9D9D9; color: #595959; cursor: pointer; }
-  .btn-cancel:hover { border-color: #1664FF; color: #1664FF; }
-  .btn-confirm { padding: 8px 18px; border-radius: 6px; font-size: 13px; background: #1664FF; border: none; color: #fff; cursor: pointer; }
+/* 全选行 */
+.select-row { display: flex; align-items: center; padding: 9px 20px; background: #FAFAFA; border-bottom: 1px solid #E5E5E5; flex-shrink: 0; }
+.select-chk-wrap { display: flex; align-items: center; cursor: pointer; padding: 3px; margin: -3px; border-radius: 4px; }
+.select-chk-wrap:hover .select-chk { border-color: #1664FF; }
+.select-chk { width: 16px; height: 16px; border: 2px solid #D9D9D9; border-radius: 3px; background: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.15s; }
+.select-chk.checked { background: #1664FF; border-color: #1664FF; }
+.select-chk.checked::after { content: ''; width: 8px; height: 4px; border-left: 2px solid #fff; border-bottom: 2px solid #fff; transform: rotate(-45deg) translateY(-1px); }
+.select-text { font-size: 12px; color: #333; margin-left: 8px; }
+.select-badge { font-size: 11px; color: #8C8C8C; background: #F0F0F0; border-radius: 8px; padding: 1px 8px; margin-left: 10px; }
 
-  /* ===== 成功弹窗 ===== */
-  .success-modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.45); display: flex; align-items: center; justify-content: center; z-index: 1100; }
-  .success-box { background: #fff; border-radius: 12px; padding: 32px; width: 360px; max-width: 90%; text-align: center; }
-  .success-icon { width: 60px; height: 60px; background: #F6FFED; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; font-size: 28px; }
-  .success-title { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
-  .success-info { font-size: 13px; color: #8C8C8C; margin-bottom: 24px; }
-  .success-btns { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
-  .btn-success { padding: 9px 18px; border-radius: 6px; font-size: 13px; cursor: pointer; border: none; transition: all 0.15s; }
-  .btn-success-blue { background: #1664FF; color: #fff; }
-  .btn-success-outline { background: #fff; color: #595959; border: 1px solid #D9D9D9; }
-  .btn-success-ghost { background: transparent; color: #8C8C8C; border: none; }
+/* 弹窗列表 */
+.modal-list { flex: 1; overflow-y: auto; }
+.modal-list::-webkit-scrollbar { width: 5px; }
+.modal-list::-webkit-scrollbar-track { background: transparent; }
+.modal-list::-webkit-scrollbar-thumb { background: #D9D9D9; border-radius: 3px; }
 
-  /* ===== 物流选择行 ===== */
-  .logistics-row { padding: 14px 20px; border-top: 1px solid #F0F0F0; display: flex; align-items: center; gap: 12px; background: #fff; flex-shrink: 0; }
-  .logistics-label { font-size: 13px; color: #595959; }
-  .logistics-select { padding: 8px 12px; border: 1px solid #D9D9D9; border-radius: 4px; font-size: 13px; min-width: 130px; outline: none; color: #333; }
-  .waybill-input { padding: 8px 12px; border: 1px solid #D9D9D9; border-radius: 4px; font-size: 13px; width: 160px; outline: none; color: #333; }
-  .waybill-tip { font-size: 11px; color: #8C8C8C; }
+/* 弹窗表格 */
+.modal-table-head { display: flex; padding: 8px 20px; background: #fff; border-bottom: 1px solid #E5E5E5; font-size: 11px; font-weight: 600; color: #8C8C8C; flex-shrink: 0; }
+.modal-table-head .th { flex: 1; display: flex; align-items: center; }
+.modal-table-head .th.check { flex: 0 0 46px; justify-content: center; }
+.modal-table-head .th.right { justify-content: flex-end; }
+.modal-table-head .th.center { justify-content: center; }
+.modal-table-head .th.op { flex: 0 0 80px; justify-content: center; }
 
-  /* ===== 分页 ===== */
-  .pagination { display: flex; align-items: center; justify-content: flex-end; gap: 8px; padding: 16px 20px; background: #fff; border-top: 1px solid #F0F0F0; }
-  .page-btn { min-width: 32px; height: 32px; border: 1px solid #D9D9D9; border-radius: 4px; background: #fff; font-size: 13px; color: #595959; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 0 8px; }
-  .page-btn:hover { border-color: #1664FF; color: #1664FF; }
-  .page-btn.active { background: #1664FF; color: #fff; border-color: #1664FF; }
-  .page-btn.disabled { opacity: 0.4; cursor: not-allowed; }
-  .page-info { font-size: 12px; color: #8C8C8C; margin-left: 8px; }
+.modal-tr { display: flex; padding: 10px 20px; border-bottom: 1px solid #F0F0F0; align-items: center; transition: background 0.15s; }
+.modal-tr:hover { background: #FAFAFA; }
+.modal-tr.selected { background: #E8F0FF; }
+.modal-tr.shipped { opacity: 0.55; background: #F5F5F5; }
+.modal-tr.shipped .modal-td-name { text-decoration: line-through; color: #8C8C8C; }
+.modal-td { flex: 1; font-size: 12px; color: #333; display: flex; align-items: center; }
+.modal-td.check { flex: 0 0 46px; justify-content: center; }
+.modal-td.right { justify-content: flex-end; }
+.modal-td.center { justify-content: center; }
+.modal-td.op { flex: 0 0 80px; justify-content: center; gap: 4px; }
+.modal-td-name { font-weight: 500; }
+.modal-td-sub { font-size: 11px; color: #8C8C8C; margin-top: 1px; }
+.modal-td-spec { font-size: 11px; color: #8C8C8C; }
+.modal-price { font-weight: 600; }
+.modal-subtotal { font-weight: 700; color: #F5222D; }
 
-  /* ===== 说明 ===== */
-  .info-box { background: #FAFAFA; border-radius: 8px; padding: 16px; margin-top: 20px; }
-  .info-title { font-size: 12px; font-weight: 600; color: #595959; margin-bottom: 8px; }
-  .info-item { font-size: 12px; color: #8C8C8C; line-height: 1.8; }
-  .info-item span { color: #1664FF; font-weight: 600; }
+/* 底部固定栏 */
+.modal-fixed-bottom { padding: 10px 20px; border-top: 1px solid #E5E5E5; background: #fff; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; box-shadow: 0 -2px 8px rgba(0,0,0,0.04); }
+.modal-fixed-left { display: flex; align-items: center; gap: 12px; }
+.modal-fixed-count { font-size: 12px; color: #333; }
+.modal-fixed-count .n { color: #1664FF; font-weight: 700; }
+.modal-sync-tip { font-size: 11px; color: #1664FF; background: #E8F0FF; padding: 3px 9px; border-radius: 4px; display: flex; align-items: center; gap: 4px; }
+.modal-fixed-right { display: flex; align-items: center; gap: 10px; }
+.modal-total { font-size: 12px; color: #595959; }
+.modal-total .amt { font-size: 16px; font-weight: 700; color: #F5222D; }
+.modal-fixed-btns { display: flex; gap: 8px; }
+.modal-btn { padding: 8px 18px; border-radius: 6px; font-size: 13px; font-weight: 500; cursor: pointer; border: none; transition: all 0.15s; }
+.modal-btn-cancel { background: #fff; color: #595959; border: 1px solid #D9D9D9; }
+.modal-btn-cancel:hover { border-color: #1664FF; color: #1664FF; }
+.modal-btn-confirm { background: #1664FF; color: #fff; }
+.modal-btn-confirm:hover { background: #1458DB; }
+.modal-btn-confirm .icon { margin-right: 4px; }
 
-  /* ===== 页面标注 ===== */
-  .page-indicator { background: #fff; border-radius: 8px; padding: 16px 20px; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; }
-  .page-indicator-left { display: flex; align-items: center; gap: 12px; }
-  .page-num { width: 32px; height: 32px; background: #1664FF; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; }
-  .page-name { font-size: 15px; font-weight: 600; color: #333; }
-  .page-desc { font-size: 12px; color: #8C8C8C; margin-top: 2px; }
-  .page-badge { background: #E8F0FF; color: #1664FF; font-size: 11px; padding: 3px 10px; border-radius: 20px; }
+/* 物流行 */
+.logistics-row { padding: 10px 20px; border-top: 1px solid #F0F0F0; display: flex; align-items: center; gap: 10px; background: #fff; flex-shrink: 0; }
+.logistics-lbl { font-size: 12px; color: #595959; }
+.logistics-sel { padding: 7px 10px; border: 1px solid #D9D9D9; border-radius: 4px; font-size: 12px; min-width: 120px; outline: none; color: #333; }
+.waybill-input { padding: 7px 10px; border: 1px solid #D9D9D9; border-radius: 4px; font-size: 12px; width: 150px; outline: none; color: #333; }
+.waybill-tip { font-size: 10px; color: #8C8C8C; }
 
-  /* ===== 卡片标题 ===== */
-  .section-title { font-size: 14px; font-weight: 600; color: #333; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
-  .section-title::before { content: ''; width: 4px; height: 16px; background: #1664FF; border-radius: 2px; }
+/* ===== 分页 ===== */
+.pagination { display: flex; align-items: center; justify-content: flex-end; gap: 6px; padding: 12px 16px; background: #fff; border-top: 1px solid #F0F0F0; }
+.page-btn { min-width: 30px; height: 30px; border: 1px solid #D9D9D9; border-radius: 4px; background: #fff; font-size: 12px; color: #595959; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 0 6px; }
+.page-btn:hover { border-color: #1664FF; color: #1664FF; }
+.page-btn.active { background: #1664FF; color: #fff; border-color: #1664FF; }
+.page-btn.disabled { opacity: 0.4; cursor: not-allowed; }
+.page-info { font-size: 11px; color: #8C8C8C; margin-left: 6px; }
+
+/* ===== 说明 ===== */
+.info-box { background: #FAFAFA; border-radius: 8px; padding: 14px; margin-top: 16px; }
+.info-title { font-size: 11px; font-weight: 600; color: #595959; margin-bottom: 6px; }
+.info-item { font-size: 11px; color: #8C8C8C; line-height: 1.7; }
+.info-item span { color: #1664FF; font-weight: 600; }
 </style>
 </head>
 <body>
 
-<h1>打印标签与打单发货 - 完整页面交互 Demo</h1>
-<p class="subtitle">商家端 #1664FF · 深色顶栏 #1A1A1A · 页面：打印标签弹窗 / 打单发货列表 / 发货记录列表</p>
+<h1>打印标签与打单发货 - 商家端完整交互</h1>
+<p class="subtitle">商家端 #1664FF · 深色顶栏 #1A1A1A</p>
+
+<div style="max-width:1400px;margin:0 auto;padding:16px;">
 
 <!-- ===== 页面导航 ===== -->
-<div style="max-width:1400px;margin:0 auto;padding:20px;">
 <div class="page-nav">
   <button class="page-nav-btn active" onclick="showPage('print-label')">📋 打印标签弹窗</button>
   <button class="page-nav-btn" onclick="showPage('ship-order')">📦 打单发货列表</button>
   <button class="page-nav-btn" onclick="showPage('ship-record')">📑 发货记录列表</button>
 </div>
 
-<!-- ===== 页面1：打印标签弹窗 ===== -->
+<!-- ========================================== -->
+<!-- 页面1：打印标签弹窗 -->
+<!-- ========================================== -->
 <div id="page-print-label" class="page-section active">
 
-  <div class="page-indicator">
-    <div class="page-indicator-left">
-      <div class="page-num">1</div>
+  <div class="page-header">
+    <div class="page-title-wrap">
+      <span class="page-icon">📋</span>
       <div>
-        <div class="page-name">打印标签弹窗</div>
-        <div class="page-desc">订单详情页 → 点击"打印标签"按钮 → 弹出此弹窗</div>
+        <div class="page-title">打印标签弹窗</div>
+        <div class="page-breadcrumb">订单详情 → 打印标签</div>
       </div>
     </div>
-    <span class="page-badge">弹窗</span>
+    <span class="page-badge-small">弹窗</span>
   </div>
 
   <!-- 弹窗 -->
   <div class="modal-overlay" style="position:relative;background:transparent;display:block;">
-    <div class="modal-box">
-      <!-- 头部 -->
-      <div class="modal-head">
-        <span class="modal-title">打印标签</span>
-        <div class="modal-head-right">
-          <span style="font-size:12px;color:#8C8C8C;">订单号：DD20260521001 · 深圳模具钢材厂</span>
-          <button class="modal-close">×</button>
+  <div class="modal-box">
+    <!-- 头部 -->
+    <div class="modal-head">
+      <span class="modal-title">打印标签</span>
+      <div class="modal-head-right">
+        <span class="modal-order-info">订单号：DD20260521001 · 深圳模具钢材厂</span>
+        <button class="modal-close">×</button>
+      </div>
+    </div>
+
+    <!-- Tab行 -->
+    <div class="modal-tab-row">
+      <span class="modal-tab">全部<span class="cnt">12</span></span>
+      <span class="modal-tab active">未打印<span class="cnt">9</span></span>
+      <span class="modal-tab">已打印<span class="cnt">3</span></span>
+      <div class="modal-right-actions">
+        <button class="reverse-btn">
+          <span class="reverse-icon">⇆</span>
+          <span>反选</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- 全选行 -->
+    <div class="select-row">
+      <label class="select-chk-wrap">
+        <div class="select-chk checked"></div>
+        <span class="select-text">全选</span>
+      </label>
+      <span class="select-badge">已选 6 个</span>
+    </div>
+
+    <!-- 列表 -->
+    <div class="modal-list">
+      <!-- 表头 -->
+      <div class="modal-table-head">
+        <div class="th check">勾选</div>
+        <div class="th">商品名称</div>
+        <div class="th center" style="flex:0 0 70px;">规格</div>
+        <div class="th center" style="flex:0 0 50px;">单位</div>
+        <div class="th right" style="flex:0 0 60px;">数量</div>
+        <div class="th right" style="flex:0 0 70px;">单价</div>
+        <div class="th right" style="flex:0 0 80px;">小计</div>
+        <div class="th op">操作</div>
+      </div>
+
+      <!-- 已勾选行1 -->
+      <div class="modal-tr selected">
+        <div class="modal-td check">
+          <div class="check-btn checked"><span class="cb"></span></div>
+        </div>
+        <div class="modal-td"><div><div class="modal-td-name">塑胶方盒 50×50×20mm</div><div class="modal-td-sub">品牌：国产 · SKU: A123456</div></div></div>
+        <div class="modal-td center" style="flex:0 0 70px;font-size:11px;color:#8C8C8C;">50×50×20</div>
+        <div class="modal-td center" style="flex:0 0 50px;font-size:11px;color:#8C8C8C;">pcs</div>
+        <div class="modal-td right" style="flex:0 0 60px;font-weight:500;">100</div>
+        <div class="modal-td right" style="flex:0 0 70px;"><span class="modal-price">¥2.50</span></div>
+        <div class="modal-td right" style="flex:0 0 80px;"><span class="modal-subtotal">¥250.00</span></div>
+        <div class="modal-td op">
+          <button class="op-btn">打印</button>
+          <button class="op-btn">编辑</button>
         </div>
       </div>
 
-      <!-- Tab -->
-      <div class="modal-tabs">
-        <span class="modal-tab">全部<span class="count">12</span></span>
-        <span class="modal-tab active">未打印<span class="count">9</span></span>
-        <span class="modal-tab">已打印<span class="count">3</span></span>
-        <div class="modal-actions">
-          <button class="reverse-btn">
-            <span class="reverse-icon">⇆</span>
-            <span>反选</span>
-          </button>
+      <!-- 已勾选行2 -->
+      <div class="modal-tr selected">
+        <div class="modal-td check">
+          <div class="check-btn checked"><span class="cb"></span></div>
+        </div>
+        <div class="modal-td"><div><div class="modal-td-name">模具配件-圆形顶针</div><div class="modal-td-sub">材质：SKD61 · 规格：Φ3×50mm</div></div></div>
+        <div class="modal-td center" style="flex:0 0 70px;font-size:11px;color:#8C8C8C;">Φ3×50</div>
+        <div class="modal-td center" style="flex:0 0 50px;font-size:11px;color:#8C8C8C;">pcs</div>
+        <div class="modal-td right" style="flex:0 0 60px;font-weight:500;">500</div>
+        <div class="modal-td right" style="flex:0 0 70px;"><span class="modal-price">¥0.80</span></div>
+        <div class="modal-td right" style="flex:0 0 80px;"><span class="modal-subtotal">¥400.00</span></div>
+        <div class="modal-td op">
+          <button class="op-btn">打印</button>
+          <button class="op-btn">编辑</button>
         </div>
       </div>
 
-      <!-- 全选行 -->
-      <div class="select-row">
-        <label class="select-label-wrap">
-          <div class="select-check checked"></div>
-          <span class="select-label-text">全选</span>
-        </label>
-        <span class="select-count-badge">已选 6 个</span>
-      </div>
-
-      <!-- 列表 -->
-      <div class="modal-list">
-        <div class="table-head" style="background:#fff;">
-          <div class="th checkbox-col">勾选</div>
-          <div class="th">商品名称</div>
-          <div class="th" style="flex:0 0 80px;text-align:center;">规格</div>
-          <div class="th" style="flex:0 0 60px;text-align:center;">单位</div>
-          <div class="th" style="flex:0 0 70px;text-align:right;">数量</div>
-          <div class="th" style="flex:0 0 80px;text-align:right;">单价</div>
-          <div class="th" style="flex:0 0 90px;text-align:right;">小计</div>
-          <div class="th op">操作</div>
+      <!-- 已勾选行3 -->
+      <div class="modal-tr selected">
+        <div class="modal-td check">
+          <div class="check-btn checked"><span class="cb"></span></div>
         </div>
-
-        <!-- 已勾选 -->
-        <div class="tr selected">
-          <div class="td checkbox-col">
-            <div class="check-btn checked"><span class="cb"></span></div>
-          </div>
-          <div class="td"><div><div class="goods-name">塑胶方盒 50×50×20mm</div><div class="goods-meta">品牌：国产 · SKU: A123456</div></div></div>
-          <div class="td" style="flex:0 0 80px;text-align:center;font-size:12px;color:#8C8C8C;">50×50×20</div>
-          <div class="td" style="flex:0 0 60px;text-align:center;font-size:12px;color:#8C8C8C;">pcs</div>
-          <div class="td" style="flex:0 0 70px;text-align:right;font-weight:500;">100</div>
-          <div class="td" style="flex:0 0 80px;text-align:right;"><span class="price">¥2.50</span></div>
-          <div class="td" style="flex:0 0 90px;text-align:right;"><span class="subtotal">¥250.00</span></div>
-          <div class="td op">
-            <button class="op-btn">打印</button>
-            <button class="op-btn">编辑</button>
-          </div>
-        </div>
-
-        <div class="tr selected">
-          <div class="td checkbox-col">
-            <div class="check-btn checked"><span class="cb"></span></div>
-          </div>
-          <div class="td"><div><div class="goods-name">模具配件-圆形顶针</div><div class="goods-meta">材质：SKD61 · 规格：Φ3×50mm</div></div></div>
-          <div class="td" style="flex:0 0 80px;text-align:center;font-size:12px;color:#8C8C8C;">Φ3×50</div>
-          <div class="td" style="flex:0 0 60px;text-align:center;font-size:12px;color:#8C8C8C;">pcs</div>
-          <div class="td" style="flex:0 0 70px;text-align:right;font-weight:500;">500</div>
-          <div class="td" style="flex:0 0 80px;text-align:right;"><span class="price">¥0.80</span></div>
-          <div class="td" style="flex:0 0 90px;text-align:right;"><span class="subtotal">¥400.00</span></div>
-          <div class="td op">
-            <button class="op-btn">打印</button>
-            <button class="op-btn">编辑</button>
-          </div>
-        </div>
-
-        <div class="tr selected">
-          <div class="td checkbox-col">
-            <div class="check-btn checked"><span class="cb"></span></div>
-          </div>
-          <div class="td"><div><div class="goods-name">标准件-六角螺栓</div><div class="goods-meta">标准：GB/T5783 · 规格：M10×40</div></div></div>
-          <div class="td" style="flex:0 0 80px;text-align:center;font-size:12px;color:#8C8C8C;">M10×40</div>
-          <div class="td" style="flex:0 0 60px;text-align:center;font-size:12px;color:#8C8C8C;">pcs</div>
-          <div class="td" style="flex:0 0 70px;text-align:right;font-weight:500;">200</div>
-          <div class="td" style="flex:0 0 80px;text-align:right;"><span class="price">¥1.20</span></div>
-          <div class="td" style="flex:0 0 90px;text-align:right;"><span class="subtotal">¥240.00</span></div>
-          <div class="td op">
-            <button class="op-btn">打印</button>
-            <button class="op-btn">编辑</button>
-          </div>
-        </div>
-
-        <!-- 未勾选 -->
-        <div class="tr">
-          <div class="td checkbox-col">
-            <div class="check-btn"><span class="cb"></span></div>
-          </div>
-          <div class="td"><div><div class="goods-name">导柱 Φ12×100mm</div><div class="goods-meta">材质：GCr15 · 品牌：好望</div></div></div>
-          <div class="td" style="flex:0 0 80px;text-align:center;font-size:12px;color:#8C8C8C;">Φ12×100</div>
-          <div class="td" style="flex:0 0 60px;text-align:center;font-size:12px;color:#8C8C8C;">pcs</div>
-          <div class="td" style="flex:0 0 70px;text-align:right;font-weight:500;">50</div>
-          <div class="td" style="flex:0 0 80px;text-align:right;"><span class="price">¥8.00</span></div>
-          <div class="td" style="flex:0 0 90px;text-align:right;"><span class="subtotal">¥400.00</span></div>
-          <div class="td op">
-            <button class="op-btn">打印</button>
-            <button class="op-btn">编辑</button>
-          </div>
-        </div>
-
-        <div class="tr">
-          <div class="td checkbox-col">
-            <div class="check-btn"><span class="cb"></span></div>
-          </div>
-          <div class="td"><div><div class="goods-name">弹簧 Φ10×30mm</div><div class="goods-meta">材质：65Mn · 规格：Ф10×30</div></div></div>
-          <div class="td" style="flex:0 0 80px;text-align:center;font-size:12px;color:#8C8C8C;">Ф10×30</div>
-          <div class="td" style="flex:0 0 60px;text-align:center;font-size:12px;color:#8C8C8C;">pcs</div>
-          <div class="td" style="flex:0 0 70px;text-align:right;font-weight:500;">100</div>
-          <div class="td" style="flex:0 0 80px;text-align:right;"><span class="price">¥3.00</span></div>
-          <div class="td" style="flex:0 0 90px;text-align:right;"><span class="subtotal">¥300.00</span></div>
-          <div class="td op">
-            <button class="op-btn">打印</button>
-            <button class="op-btn">编辑</button>
-          </div>
-        </div>
-
-        <div class="tr">
-          <div class="td checkbox-col">
-            <div class="check-btn"><span class="cb"></span></div>
-          </div>
-          <div class="td"><div><div class="goods-name">模具配件-方形镶块</div><div class="goods-meta">材质：NAK80 · 规格：20×20×10mm</div></div></div>
-          <div class="td" style="flex:0 0 80px;text-align:center;font-size:12px;color:#8C8C8C;">20×20×10</div>
-          <div class="td" style="flex:0 0 60px;text-align:center;font-size:12px;color:#8C8C8C;">pcs</div>
-          <div class="td" style="flex:0 0 70px;text-align:right;font-weight:500;">80</div>
-          <div class="td" style="flex:0 0 80px;text-align:right;"><span class="price">¥5.00</span></div>
-          <div class="td" style="flex:0 0 90px;text-align:right;"><span class="subtotal">¥400.00</span></div>
-          <div class="td op">
-            <button class="op-btn">打印</button>
-            <button class="op-btn">编辑</button>
-          </div>
-        </div>
-
-        <!-- 已发货 -->
-        <div class="tr shipped">
-          <div class="td checkbox-col">
-            <div class="check-btn disabled"><span class="cb" style="opacity:0.4;"></span></div>
-          </div>
-          <div class="td"><div><div class="goods-name">精密钢料 H13<span class="shipped-tag">已发货</span></div><div class="goods-meta">规格：100×50×20mm · 已发货</div></div></div>
-          <div class="td" style="flex:0 0 80px;text-align:center;font-size:12px;color:#8C8C8C;">100×50×20</div>
-          <div class="td" style="flex:0 0 60px;text-align:center;font-size:12px;color:#8C8C8C;">pcs</div>
-          <div class="td" style="flex:0 0 70px;text-align:right;font-weight:500;">30</div>
-          <div class="td" style="flex:0 0 80px;text-align:right;"><span class="price">¥12.00</span></div>
-          <div class="td" style="flex:0 0 90px;text-align:right;"><span class="subtotal">¥360.00</span></div>
-          <div class="td op">
-            <button class="op-btn">打印</button>
-            <button class="op-btn">编辑</button>
-          </div>
-        </div>
-
-        <div class="tr shipped">
-          <div class="td checkbox-col">
-            <div class="check-btn disabled"><span class="cb" style="opacity:0.4;"></span></div>
-          </div>
-          <div class="td"><div><div class="goods-name">模具钢料 S136<span class="shipped-tag">已发货</span></div><div class="goods-meta">规格：150×100×30mm · 已发货</div></div></div>
-          <div class="td" style="flex:0 0 80px;text-align:center;font-size:12px;color:#8C8C8C;">150×100×30</div>
-          <div class="td" style="flex:0 0 60px;text-align:center;font-size:12px;color:#8C8C8C;">pcs</div>
-          <div class="td" style="flex:0 0 70px;text-align:right;font-weight:500;">20</div>
-          <div class="td" style="flex:0 0 80px;text-align:right;"><span class="price">¥18.00</span></div>
-          <div class="td" style="flex:0 0 90px;text-align:right;"><span class="subtotal">¥360.00</span></div>
-          <div class="td op">
-            <button class="op-btn">打印</button>
-            <button class="op-btn">编辑</button>
-          </div>
-        </div>
-
-        <div class="tr shipped">
-          <div class="td checkbox-col">
-            <div class="check-btn disabled"><span class="cb" style="opacity:0.4;"></span></div>
-          </div>
-          <div class="td"><div><div class="goods-name">顶级模具钢 DAC<span class="shipped-tag">已发货</span></div><div class="goods-meta">规格：200×100×40mm · 已发货</div></div></div>
-          <div class="td" style="flex:0 0 80px;text-align:center;font-size:12px;color:#8C8C8C;">200×100×40</div>
-          <div class="td" style="flex:0 0 60px;text-align:center;font-size:12px;color:#8C8C8C;">pcs</div>
-          <div class="td" style="flex:0 0 70px;text-align:right;font-weight:500;">15</div>
-          <div class="td" style="flex:0 0 80px;text-align:right;"><span class="price">¥25.00</span></div>
-          <div class="td" style="flex:0 0 90px;text-align:right;"><span class="subtotal">¥375.00</span></div>
-          <div class="td op">
-            <button class="op-btn">打印</button>
-            <button class="op-btn">编辑</button>
-          </div>
+        <div class="modal-td"><div><div class="modal-td-name">标准件-六角螺栓</div><div class="modal-td-sub">标准：GB/T5783 · 规格：M10×40</div></div></div>
+        <div class="modal-td center" style="flex:0 0 70px;font-size:11px;color:#8C8C8C;">M10×40</div>
+        <div class="modal-td center" style="flex:0 0 50px;font-size:11px;color:#8C8C8C;">pcs</div>
+        <div class="modal-td right" style="flex:0 0 60px;font-weight:500;">200</div>
+        <div class="modal-td right" style="flex:0 0 70px;"><span class="modal-price">¥1.20</span></div>
+        <div class="modal-td right" style="flex:0 0 80px;"><span class="modal-subtotal">¥240.00</span></div>
+        <div class="modal-td op">
+          <button class="op-btn">打印</button>
+          <button class="op-btn">编辑</button>
         </div>
       </div>
 
-      <!-- 固定底部 -->
-      <div class="fixed-bottom-bar" style="position:relative;">
-        <div class="fixed-bottom-left">
-          <span class="fixed-count">已勾选 <span class="num">6</span> 个商品</span>
-          <span class="sync-tip">已同步到打单发货</span>
+      <!-- 未勾选行1 -->
+      <div class="modal-tr">
+        <div class="modal-td check">
+          <div class="check-btn"><span class="cb"></span></div>
         </div>
-        <div class="fixed-bottom-right">
-          <span class="total-info">合计：<span class="total-amount">¥890.00</span></span>
-          <div class="fixed-actions">
-            <button class="btn btn-outline">取消</button>
-            <button class="btn btn-pri">✓ 确认打印</button>
-          </div>
+        <div class="modal-td"><div><div class="modal-td-name">导柱 Φ12×100mm</div><div class="modal-td-sub">材质：GCr15 · 品牌：好望</div></div></div>
+        <div class="modal-td center" style="flex:0 0 70px;font-size:11px;color:#8C8C8C;">Φ12×100</div>
+        <div class="modal-td center" style="flex:0 0 50px;font-size:11px;color:#8C8C8C;">pcs</div>
+        <div class="modal-td right" style="flex:0 0 60px;font-weight:500;">50</div>
+        <div class="modal-td right" style="flex:0 0 70px;"><span class="modal-price">¥8.00</span></div>
+        <div class="modal-td right" style="flex:0 0 80px;"><span class="modal-subtotal">¥400.00</span></div>
+        <div class="modal-td op">
+          <button class="op-btn">打印</button>
+          <button class="op-btn">编辑</button>
+        </div>
+      </div>
+
+      <!-- 未勾选行2 -->
+      <div class="modal-tr">
+        <div class="modal-td check">
+          <div class="check-btn"><span class="cb"></span></div>
+        </div>
+        <div class="modal-td"><div><div class="modal-td-name">弹簧 Φ10×30mm</div><div class="modal-td-sub">材质：65Mn · 规格：Ф10×30</div></div></div>
+        <div class="modal-td center" style="flex:0 0 70px;font-size:11px;color:#8C8C8C;">Ф10×30</div>
+        <div class="modal-td center" style="flex:0 0 50px;font-size:11px;color:#8C8C8C;">pcs</div>
+        <div class="modal-td right" style="flex:0 0 60px;font-weight:500;">100</div>
+        <div class="modal-td right" style="flex:0 0 70px;"><span class="modal-price">¥3.00</span></div>
+        <div class="modal-td right" style="flex:0 0 80px;"><span class="modal-subtotal">¥300.00</span></div>
+        <div class="modal-td op">
+          <button class="op-btn">打印</button>
+          <button class="op-btn">编辑</button>
+        </div>
+      </div>
+
+      <!-- 未勾选行3 -->
+      <div class="modal-tr">
+        <div class="modal-td check">
+          <div class="check-btn"><span class="cb"></span></div>
+        </div>
+        <div class="modal-td"><div><div class="modal-td-name">模具配件-方形镶块</div><div class="modal-td-sub">材质：NAK80 · 规格：20×20×10mm</div></div></div>
+        <div class="modal-td center" style="flex:0 0 70px;font-size:11px;color:#8C8C8C;">20×20×10</div>
+        <div class="modal-td center" style="flex:0 0 50px;font-size:11px;color:#8C8C8C;">pcs</div>
+        <div class="modal-td right" style="flex:0 0 60px;font-weight:500;">80</div>
+        <div class="modal-td right" style="flex:0 0 70px;"><span class="modal-price">¥5.00</span></div>
+        <div class="modal-td right" style="flex:0 0 80px;"><span class="modal-subtotal">¥400.00</span></div>
+        <div class="modal-td op">
+          <button class="op-btn">打印</button>
+          <button class="op-btn">编辑</button>
+        </div>
+      </div>
+
+      <!-- 已发货行1 -->
+      <div class="modal-tr shipped">
+        <div class="modal-td check">
+          <div class="check-btn disabled"><span class="cb" style="opacity:0.4;"></span></div>
+        </div>
+        <div class="modal-td"><div><div class="modal-td-name">精密钢料 H13<span class="shipped-tag">已发货</span></div><div class="modal-td-sub">规格：100×50×20mm · 已发货</div></div></div>
+        <div class="modal-td center" style="flex:0 0 70px;font-size:11px;color:#8C8C8C;">100×50×20</div>
+        <div class="modal-td center" style="flex:0 0 50px;font-size:11px;color:#8C8C8C;">pcs</div>
+        <div class="modal-td right" style="flex:0 0 60px;font-weight:500;">30</div>
+        <div class="modal-td right" style="flex:0 0 70px;"><span class="modal-price">¥12.00</span></div>
+        <div class="modal-td right" style="flex:0 0 80px;"><span class="modal-subtotal">¥360.00</span></div>
+        <div class="modal-td op">
+          <button class="op-btn">打印</button>
+          <button class="op-btn">编辑</button>
+        </div>
+      </div>
+
+      <!-- 已发货行2 -->
+      <div class="modal-tr shipped">
+        <div class="modal-td check">
+          <div class="check-btn disabled"><span class="cb" style="opacity:0.4;"></span></div>
+        </div>
+        <div class="modal-td"><div><div class="modal-td-name">模具钢料 S136<span class="shipped-tag">已发货</span></div><div class="modal-td-sub">规格：150×100×30mm · 已发货</div></div></div>
+        <div class="modal-td center" style="flex:0 0 70px;font-size:11px;color:#8C8C8C;">150×100×30</div>
+        <div class="modal-td center" style="flex:0 0 50px;font-size:11px;color:#8C8C8C;">pcs</div>
+        <div class="modal-td right" style="flex:0 0 60px;font-weight:500;">20</div>
+        <div class="modal-td right" style="flex:0 0 70px;"><span class="modal-price">¥18.00</span></div>
+        <div class="modal-td right" style="flex:0 0 80px;"><span class="modal-subtotal">¥360.00</span></div>
+        <div class="modal-td op">
+          <button class="op-btn">打印</button>
+          <button class="op-btn">编辑</button>
+        </div>
+      </div>
+
+      <!-- 已发货行3 -->
+      <div class="modal-tr shipped">
+        <div class="modal-td check">
+          <div class="check-btn disabled"><span class="cb" style="opacity:0.4;"></span></div>
+        </div>
+        <div class="modal-td"><div><div class="modal-td-name">顶级模具钢 DAC<span class="shipped-tag">已发货</span></div><div class="modal-td-sub">规格：200×100×40mm · 已发货</div></div></div>
+        <div class="modal-td center" style="flex:0 0 70px;font-size:11px;color:#8C8C8C;">200×100×40</div>
+        <div class="modal-td center" style="flex:0 0 50px;font-size:11px;color:#8C8C8C;">pcs</div>
+        <div class="modal-td right" style="flex:0 0 60px;font-weight:500;">15</div>
+        <div class="modal-td right" style="flex:0 0 70px;"><span class="modal-price">¥25.00</span></div>
+        <div class="modal-td right" style="flex:0 0 80px;"><span class="modal-subtotal">¥375.00</span></div>
+        <div class="modal-td op">
+          <button class="op-btn">打印</button>
+          <button class="op-btn">编辑</button>
         </div>
       </div>
     </div>
+
+    <!-- 固定底部 -->
+    <div class="modal-fixed-bottom">
+      <div class="modal-fixed-left">
+        <span class="modal-fixed-count">已勾选 <span class="n">6</span> 个商品</span>
+        <span class="modal-sync-tip">↻ 已同步到打单发货</span>
+      </div>
+      <div class="modal-fixed-right">
+        <span class="modal-total">合计：<span class="amt">¥890.00</span></span>
+        <div class="modal-fixed-btns">
+          <button class="modal-btn modal-btn-cancel">取消</button>
+          <button class="modal-btn modal-btn-confirm"><span class="icon">✓</span>确认打印</button>
+        </div>
+      </div>
+    </div>
+  </div>
   </div>
 
   <div class="info-box">
-    <div class="info-title">页面说明</div>
-    <div class="info-item">· 弹窗从"订单详情"页点击"打印标签"按钮触发</div>
-    <div class="info-item">· Tab筛选：全部 / 未打印 / 已打印（未打印默认在前）</div>
-    <div class="info-item">· 复选框热区 36×36px（更容易点击）</div>
-    <div class="info-item">· 固定底部栏：已勾选数量始终可见，不随列表滚动隐藏</div>
-    <div class="info-item">· 确认打印后 → 自动同步到"打单发货"页面（已勾选状态）</div>
+    <div class="info-title">交互说明</div>
+    <div class="info-item">· 点击 Tab 切换"全部/未打印/已打印"，未打印默认在前</div>
+    <div class="info-item">· 复选框热区 34×34px（放大更容易点击）</div>
+    <div class="info-item">· 固定底部栏（已勾选 6 个商品 + 合计金额）始终显示</div>
+    <div class="info-item">· 点击"确认打印" → 自动同步到打单发货页面（已勾选状态）</div>
+    <div class="info-item">· 已发货商品：灰色背景 + 删除线 + "已发货"标签 + 复选框禁用</div>
   </div>
 </div>
 
-<!-- ===== 页面2：打单发货列表 ===== -->
+<!-- ========================================== -->
+<!-- 页面2：打单发货列表 -->
+<!-- ========================================== -->
 <div id="page-ship-order" class="page-section">
 
-  <div class="page-indicator">
-    <div class="page-indicator-left">
-      <div class="page-num">2</div>
+  <div class="page-header">
+    <div class="page-title-wrap">
+      <span class="page-icon">📦</span>
       <div>
-        <div class="page-name">打单发货列表页</div>
-        <div class="page-desc">物流 → 打单发货 → 列表页（从打印标签同步勾选的商品自动显示）</div>
+        <div class="page-title">打单发货</div>
+        <div class="page-breadcrumb">物流管理 → 打单发货</div>
       </div>
     </div>
-    <span class="page-badge">列表页</span>
+    <div class="page-actions">
+      <button class="filter-btn btn-secondary">导出</button>
+      <button class="filter-btn btn-primary">+ 新建发货</button>
+    </div>
   </div>
 
   <!-- PC端布局 -->
@@ -521,33 +533,21 @@
     <div class="pc-sidebar">
       <div class="pc-menu-section">
         <div class="pc-menu-title">订单管理</div>
-        <div class="pc-menu-item">📋 订单列表</div>
-        <div class="pc-menu-item">📦 物流管理</div>
-        <div class="pc-menu-item active">📤 打单发货<span class="pc-menu-badge">6</span></div>
-        <div class="pc-menu-item">📑 发货记录</div>
-        <div class="pc-menu-item">📊 数据统计</div>
+        <div class="pc-menu-item"><span class="pc-menu-icon"></span>订单列表</div>
+        <div class="pc-menu-item"><span class="pc-menu-icon"></span>物流管理</div>
+        <div class="pc-menu-item active"><span class="pc-menu-icon"></span>打单发货<span class="pc-menu-badge">6</span></div>
+        <div class="pc-menu-item"><span class="pc-menu-icon"></span>发货记录</div>
+        <div class="pc-menu-item"><span class="pc-menu-icon"></span>数据统计</div>
       </div>
       <div class="pc-menu-section">
         <div class="pc-menu-title">商品管理</div>
-        <div class="pc-menu-item">📦 商品列表</div>
-        <div class="pc-menu-item">🏭 供应商管理</div>
+        <div class="pc-menu-item"><span class="pc-menu-icon"></span>商品列表</div>
+        <div class="pc-menu-item"><span class="pc-menu-icon"></span>供应商管理</div>
       </div>
     </div>
 
     <!-- 主内容 -->
     <div class="pc-content">
-      <!-- 页面标题 -->
-      <div class="page-header">
-        <div>
-          <div class="page-title">打单发货</div>
-          <div class="page-breadcrumb">物流管理 → 打单发货</div>
-        </div>
-        <div class="page-actions">
-          <button class="filter-btn btn-secondary">导出</button>
-          <button class="filter-btn btn-primary">+ 新建发货</button>
-        </div>
-      </div>
-
       <!-- 统计卡片 -->
       <div class="stat-row">
         <div class="stat-card orange">
@@ -598,8 +598,8 @@
       </div>
 
       <!-- 同步提示条 -->
-      <div style="background:#E8F0FF;padding:10px 16px;border-radius:8px;margin-bottom:12px;display:flex;align-items:center;gap:8px;font-size:13px;color:#1664FF;">
-        <span>↻</span>
+      <div style="background:#E8F0FF;padding:8px 14px;border-radius:8px;margin-bottom:12px;display:flex;align-items:center;gap:6px;font-size:12px;color:#1664FF;">
+        <span style="font-size:13px;">↻</span>
         <strong>6</strong> 个商品已从"打印标签"同步勾选（订单号：DD20260521001）
       </div>
 
@@ -607,125 +607,113 @@
       <div class="table-box">
         <!-- 表头 -->
         <div class="table-head">
-          <div class="th checkbox-col">勾选</div>
+          <div class="th check">勾选</div>
           <div class="th">商品名称</div>
-          <div class="th" style="flex:0 0 80px;text-align:center;">规格</div>
-          <div class="th" style="flex:0 0 60px;text-align:center;">单位</div>
-          <div class="th" style="flex:0 0 70px;text-align:right;">数量</div>
-          <div class="th" style="flex:0 0 80px;text-align:right;">单价</div>
-          <div class="th" style="flex:0 0 90px;text-align:right;">小计</div>
-          <div class="th" style="flex:0 0 100px;text-align:center;">订单号</div>
-          <div class="th" style="flex:0 0 80px;text-align:center;">状态</div>
+          <div class="th center" style="flex:0 0 70px;">规格</div>
+          <div class="th center" style="flex:0 0 50px;">单位</div>
+          <div class="th right" style="flex:0 0 60px;">数量</div>
+          <div class="th right" style="flex:0 0 70px;">单价</div>
+          <div class="th right" style="flex:0 0 80px;">小计</div>
+          <div class="th center" style="flex:0 0 110px;">订单号</div>
+          <div class="th center" style="flex:0 0 80px;">状态</div>
           <div class="th op">操作</div>
         </div>
 
-        <!-- 数据行 - 已勾选（同步） -->
+        <!-- 已勾选（同步）1 -->
         <div class="tr selected">
-          <div class="td checkbox-col">
-            <div class="check-btn checked"><span class="cb"></span></div>
-          </div>
-          <div class="td"><div><div class="goods-name">塑胶方盒 50×50×20mm</div><div class="goods-meta">品牌：国产</div></div></div>
-          <div class="td" style="flex:0 0 80px;text-align:center;font-size:12px;color:#8C8C8C;">50×50×20</div>
-          <div class="td" style="flex:0 0 60px;text-align:center;font-size:12px;color:#8C8C8C;">pcs</div>
-          <div class="td" style="flex:0 0 70px;text-align:right;font-weight:500;">100</div>
-          <div class="td" style="flex:0 0 80px;text-align:right;"><span class="price">¥2.50</span></div>
-          <div class="td" style="flex:0 0 90px;text-align:right;"><span class="subtotal">¥250.00</span></div>
-          <div class="td" style="flex:0 0 100px;text-align:center;"><span style="color:#1664FF;font-size:12px;">DD20260521001</span></div>
-          <div class="td" style="flex:0 0 80px;text-align:center;"><span class="status-tag status-blue">待发货</span></div>
+          <div class="td check"><div class="check-btn checked"><span class="cb"></span></div></div>
+          <div class="td"><div><div class="goods-name-cell">塑胶方盒 50×50×20mm</div><div class="goods-sub">品牌：国产</div></div></div>
+          <div class="td center" style="flex:0 0 70px;font-size:11px;color:#8C8C8C;">50×50×20</div>
+          <div class="td center" style="flex:0 0 50px;font-size:11px;color:#8C8C8C;">pcs</div>
+          <div class="td right bold" style="flex:0 0 60px;">100</div>
+          <div class="td right" style="flex:0 0 70px;"><span class="modal-price">¥2.50</span></div>
+          <div class="td right" style="flex:0 0 80px;"><span class="modal-subtotal">¥250.00</span></div>
+          <div class="td center" style="flex:0 0 110px;"><span class="td blue-link">DD20260521001</span></div>
+          <div class="td center" style="flex:0 0 80px;"><span class="status-tag s-blue">待发货</span></div>
           <div class="td op">
             <button class="op-btn">编辑</button>
-            <button class="op-btn success">发货</button>
+            <button class="op-btn green">发货</button>
           </div>
         </div>
 
-        <!-- 数据行 - 已勾选（同步） -->
+        <!-- 已勾选（同步）2 -->
         <div class="tr selected">
-          <div class="td checkbox-col">
-            <div class="check-btn checked"><span class="cb"></span></div>
-          </div>
-          <div class="td"><div><div class="goods-name">模具配件-圆形顶针</div><div class="goods-meta">材质：SKD61</div></div></div>
-          <div class="td" style="flex:0 0 80px;text-align:center;font-size:12px;color:#8C8C8C;">Φ3×50</div>
-          <div class="td" style="flex:0 0 60px;text-align:center;font-size:12px;color:#8C8C8C;">pcs</div>
-          <div class="td" style="flex:0 0 70px;text-align:right;font-weight:500;">500</div>
-          <div class="td" style="flex:0 0 80px;text-align:right;"><span class="price">¥0.80</span></div>
-          <div class="td" style="flex:0 0 90px;text-align:right;"><span class="subtotal">¥400.00</span></div>
-          <div class="td" style="flex:0 0 100px;text-align:center;"><span style="color:#1664FF;font-size:12px;">DD20260521001</span></div>
-          <div class="td" style="flex:0 0 80px;text-align:center;"><span class="status-tag status-blue">待发货</span></div>
+          <div class="td check"><div class="check-btn checked"><span class="cb"></span></div></div>
+          <div class="td"><div><div class="goods-name-cell">模具配件-圆形顶针</div><div class="goods-sub">材质：SKD61</div></div></div>
+          <div class="td center" style="flex:0 0 70px;font-size:11px;color:#8C8C8C;">Φ3×50</div>
+          <div class="td center" style="flex:0 0 50px;font-size:11px;color:#8C8C8C;">pcs</div>
+          <div class="td right bold" style="flex:0 0 60px;">500</div>
+          <div class="td right" style="flex:0 0 70px;"><span class="modal-price">¥0.80</span></div>
+          <div class="td right" style="flex:0 0 80px;"><span class="modal-subtotal">¥400.00</span></div>
+          <div class="td center" style="flex:0 0 110px;"><span class="td blue-link">DD20260521001</span></div>
+          <div class="td center" style="flex:0 0 80px;"><span class="status-tag s-blue">待发货</span></div>
           <div class="td op">
             <button class="op-btn">编辑</button>
-            <button class="op-btn success">发货</button>
+            <button class="op-btn green">发货</button>
           </div>
         </div>
 
-        <!-- 数据行 - 已勾选（同步） -->
+        <!-- 已勾选（同步）3 -->
         <div class="tr selected">
-          <div class="td checkbox-col">
-            <div class="check-btn checked"><span class="cb"></span></div>
-          </div>
-          <div class="td"><div><div class="goods-name">标准件-六角螺栓</div><div class="goods-meta">标准：GB/T5783 · M10×40</div></div></div>
-          <div class="td" style="flex:0 0 80px;text-align:center;font-size:12px;color:#8C8C8C;">M10×40</div>
-          <div class="td" style="flex:0 0 60px;text-align:center;font-size:12px;color:#8C8C8C;">pcs</div>
-          <div class="td" style="flex:0 0 70px;text-align:right;font-weight:500;">200</div>
-          <div class="td" style="flex:0 0 80px;text-align:right;"><span class="price">¥1.20</span></div>
-          <div class="td" style="flex:0 0 90px;text-align:right;"><span class="subtotal">¥240.00</span></div>
-          <div class="td" style="flex:0 0 100px;text-align:center;"><span style="color:#1664FF;font-size:12px;">DD20260521001</span></div>
-          <div class="td" style="flex:0 0 80px;text-align:center;"><span class="status-tag status-blue">待发货</span></div>
+          <div class="td check"><div class="check-btn checked"><span class="cb"></span></div></div>
+          <div class="td"><div><div class="goods-name-cell">标准件-六角螺栓</div><div class="goods-sub">标准：GB/T5783 · M10×40</div></div></div>
+          <div class="td center" style="flex:0 0 70px;font-size:11px;color:#8C8C8C;">M10×40</div>
+          <div class="td center" style="flex:0 0 50px;font-size:11px;color:#8C8C8C;">pcs</div>
+          <div class="td right bold" style="flex:0 0 60px;">200</div>
+          <div class="td right" style="flex:0 0 70px;"><span class="modal-price">¥1.20</span></div>
+          <div class="td right" style="flex:0 0 80px;"><span class="modal-subtotal">¥240.00</span></div>
+          <div class="td center" style="flex:0 0 110px;"><span class="td blue-link">DD20260521001</span></div>
+          <div class="td center" style="flex:0 0 80px;"><span class="status-tag s-blue">待发货</span></div>
           <div class="td op">
             <button class="op-btn">编辑</button>
-            <button class="op-btn success">发货</button>
+            <button class="op-btn green">发货</button>
           </div>
         </div>
 
-        <!-- 数据行 - 额外勾选 -->
+        <!-- 额外勾选 -->
         <div class="tr">
-          <div class="td checkbox-col">
-            <div class="check-btn"><span class="cb"></span></div>
-          </div>
-          <div class="td"><div><div class="goods-name">导柱 Φ12×100mm</div><div class="goods-meta">材质：GCr15 · 品牌：好望</div></div></div>
-          <div class="td" style="flex:0 0 80px;text-align:center;font-size:12px;color:#8C8C8C;">Φ12×100</div>
-          <div class="td" style="flex:0 0 60px;text-align:center;font-size:12px;color:#8C8C8C;">pcs</div>
-          <div class="td" style="flex:0 0 70px;text-align:right;font-weight:500;">50</div>
-          <div class="td" style="flex:0 0 80px;text-align:right;"><span class="price">¥8.00</span></div>
-          <div class="td" style="flex:0 0 90px;text-align:right;"><span class="subtotal">¥400.00</span></div>
-          <div class="td" style="flex:0 0 100px;text-align:center;"><span style="color:#1664FF;font-size:12px;">DD20260521001</span></div>
-          <div class="td" style="flex:0 0 80px;text-align:center;"><span class="status-tag status-orange">部分发货</span></div>
+          <div class="td check"><div class="check-btn"><span class="cb"></span></div></div>
+          <div class="td"><div><div class="goods-name-cell">导柱 Φ12×100mm</div><div class="goods-sub">材质：GCr15 · 品牌：好望</div></div></div>
+          <div class="td center" style="flex:0 0 70px;font-size:11px;color:#8C8C8C;">Φ12×100</div>
+          <div class="td center" style="flex:0 0 50px;font-size:11px;color:#8C8C8C;">pcs</div>
+          <div class="td right bold" style="flex:0 0 60px;">50</div>
+          <div class="td right" style="flex:0 0 70px;"><span class="modal-price">¥8.00</span></div>
+          <div class="td right" style="flex:0 0 80px;"><span class="modal-subtotal">¥400.00</span></div>
+          <div class="td center" style="flex:0 0 110px;"><span class="td blue-link">DD20260521001</span></div>
+          <div class="td center" style="flex:0 0 80px;"><span class="status-tag s-orange">部分发货</span></div>
           <div class="td op">
             <button class="op-btn">编辑</button>
-            <button class="op-btn success">发货</button>
+            <button class="op-btn green">发货</button>
           </div>
         </div>
 
-        <!-- 数据行 - 已发货 -->
+        <!-- 已发货1 -->
         <div class="tr shipped">
-          <div class="td checkbox-col">
-            <div class="check-btn disabled"><span class="cb" style="opacity:0.4;"></span></div>
-          </div>
-          <div class="td"><div><div class="goods-name">精密钢料 H13<span class="shipped-tag">已发货</span></div><div class="goods-meta">运单号：SF1234567890</div></div></div>
-          <div class="td" style="flex:0 0 80px;text-align:center;font-size:12px;color:#8C8C8C;">100×50×20</div>
-          <div class="td" style="flex:0 0 60px;text-align:center;font-size:12px;color:#8C8C8C;">pcs</div>
-          <div class="td" style="flex:0 0 70px;text-align:right;font-weight:500;">30</div>
-          <div class="td" style="flex:0 0 80px;text-align:right;"><span class="price">¥12.00</span></div>
-          <div class="td" style="flex:0 0 90px;text-align:right;"><span class="subtotal">¥360.00</span></div>
-          <div class="td" style="flex:0 0 100px;text-align:center;"><span style="color:#8C8C8C;font-size:12px;">DD20260521001</span></div>
-          <div class="td" style="flex:0 0 80px;text-align:center;"><span class="status-tag status-green">已发货</span></div>
+          <div class="td check"><div class="check-btn disabled"><span class="cb" style="opacity:0.4;"></span></div></div>
+          <div class="td"><div><div class="goods-name-cell">精密钢料 H13<span class="shipped-tag">已发货</span></div><div class="goods-sub">运单号：SF1234567890</div></div></div>
+          <div class="td center" style="flex:0 0 70px;font-size:11px;color:#8C8C8C;">100×50×20</div>
+          <div class="td center" style="flex:0 0 50px;font-size:11px;color:#8C8C8C;">pcs</div>
+          <div class="td right bold" style="flex:0 0 60px;">30</div>
+          <div class="td right" style="flex:0 0 70px;"><span class="modal-price">¥12.00</span></div>
+          <div class="td right" style="flex:0 0 80px;"><span class="modal-subtotal">¥360.00</span></div>
+          <div class="td center" style="flex:0 0 110px;"><span class="td gray">DD20260521001</span></div>
+          <div class="td center" style="flex:0 0 80px;"><span class="status-tag s-green">已发货</span></div>
           <div class="td op">
             <button class="op-btn">查看</button>
           </div>
         </div>
 
-        <!-- 数据行 - 已发货 -->
+        <!-- 已发货2 -->
         <div class="tr shipped">
-          <div class="td checkbox-col">
-            <div class="check-btn disabled"><span class="cb" style="opacity:0.4;"></span></div>
-          </div>
-          <div class="td"><div><div class="goods-name">模具钢料 S136<span class="shipped-tag">已发货</span></div><div class="goods-meta">运单号：SF1234567890</div></div></div>
-          <div class="td" style="flex:0 0 80px;text-align:center;font-size:12px;color:#8C8C8C;">150×100×30</div>
-          <div class="td" style="flex:0 0 60px;text-align:center;font-size:12px;color:#8C8C8C;">pcs</div>
-          <div class="td" style="flex:0 0 70px;text-align:right;font-weight:500;">20</div>
-          <div class="td" style="flex:0 0 80px;text-align:right;"><span class="price">¥18.00</span></div>
-          <div class="td" style="flex:0 0 90px;text-align:right;"><span class="subtotal">¥360.00</span></div>
-          <div class="td" style="flex:0 0 100px;text-align:center;"><span style="color:#8C8C8C;font-size:12px;">DD20260521001</span></div>
-          <div class="td" style="flex:0 0 80px;text-align:center;"><span class="status-tag status-green">已发货</span></div>
+          <div class="td check"><div class="check-btn disabled"><span class="cb" style="opacity:0.4;"></span></div></div>
+          <div class="td"><div><div class="goods-name-cell">模具钢料 S136<span class="shipped-tag">已发货</span></div><div class="goods-sub">运单号：SF1234567890</div></div></div>
+          <div class="td center" style="flex:0 0 70px;font-size:11px;color:#8C8C8C;">150×100×30</div>
+          <div class="td center" style="flex:0 0 50px;font-size:11px;color:#8C8C8C;">pcs</div>
+          <div class="td right bold" style="flex:0 0 60px;">20</div>
+          <div class="td right" style="flex:0 0 70px;"><span class="modal-price">¥18.00</span></div>
+          <div class="td right" style="flex:0 0 80px;"><span class="modal-subtotal">¥360.00</span></div>
+          <div class="td center" style="flex:0 0 110px;"><span class="td gray">DD20260521001</span></div>
+          <div class="td center" style="flex:0 0 80px;"><span class="status-tag s-green">已发货</span></div>
           <div class="td op">
             <button class="op-btn">查看</button>
           </div>
@@ -733,24 +721,24 @@
       </div>
 
       <!-- 固定底部 -->
-      <div class="fixed-bottom-bar">
-        <div class="fixed-bottom-left">
-          <span class="fixed-count">已勾选 <span class="num">4</span> 个商品</span>
+      <div class="modal-fixed-bottom" style="border-radius:0 0 8px 8px;">
+        <div class="modal-fixed-left">
+          <span class="modal-fixed-count">已勾选 <span class="n">4</span> 个商品</span>
         </div>
-        <div class="fixed-bottom-right">
-          <span class="total-info">合计：<span class="total-amount">¥890.00</span></span>
-          <div style="display:flex;align-items:center;gap:12px;">
-            <select style="padding:8px 12px;border:1px solid #D9D9D9;border-radius:4px;font-size:13px;min-width:130px;outline:none;color:#333;">
+        <div class="modal-fixed-right">
+          <span class="modal-total">合计：<span class="amt">¥890.00</span></span>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <select class="logistics-sel">
               <option>顺丰速运</option>
               <option>中通快递</option>
               <option>圆通速递</option>
               <option>德邦物流</option>
             </select>
-            <input style="padding:8px 12px;border:1px solid #D9D9D9;border-radius:4px;font-size:13px;width:160px;outline:none;color:#333;" placeholder="运单号" />
+            <input class="waybill-input" placeholder="运单号" value="SF1234567890" />
           </div>
-          <div class="fixed-actions">
-            <button class="btn btn-outline">取消</button>
-            <button class="btn btn-pri">✓ 确认发货</button>
+          <div class="modal-fixed-btns">
+            <button class="modal-btn modal-btn-cancel">取消</button>
+            <button class="modal-btn modal-btn-confirm"><span class="icon">✓</span>确认发货</button>
           </div>
         </div>
       </div>
@@ -768,27 +756,30 @@
   </div>
 
   <div class="info-box">
-    <div class="info-title">页面说明</div>
-    <div class="info-item">· 从打印标签弹窗勾选后 → 商品自动同步到打单发货列表（已勾选状态）</div>
+    <div class="info-title">交互说明</div>
+    <div class="info-item">· 打印标签弹窗勾选后 → 商品自动同步到打单发货列表（已勾选状态）</div>
     <div class="info-item">· 蓝色提示条显示同步数量和订单号</div>
     <div class="info-item">· 可额外勾选/取消（不影响打印标签弹窗状态）</div>
     <div class="info-item">· 确认发货后 → 商品状态变为"已发货"，打印标签弹窗不再显示</div>
-    <div class="info-item">· 底部固定栏始终显示已勾选数量和合计金额</div>
   </div>
 </div>
 
-<!-- ===== 页面3：发货记录列表 ===== -->
+<!-- ========================================== -->
+<!-- 页面3：发货记录列表 -->
+<!-- ========================================== -->
 <div id="page-ship-record" class="page-section">
 
-  <div class="page-indicator">
-    <div class="page-indicator-left">
-      <div class="page-num">3</div>
+  <div class="page-header">
+    <div class="page-title-wrap">
+      <span class="page-icon">📑</span>
       <div>
-        <div class="page-name">发货记录列表页</div>
-        <div class="page-desc">物流 → 发货记录 → 查看历史发货记录（包含跳转继续处理功能）</div>
+        <div class="page-title">发货记录</div>
+        <div class="page-breadcrumb">物流管理 → 发货记录</div>
       </div>
     </div>
-    <span class="page-badge">列表页</span>
+    <div class="page-actions">
+      <button class="filter-btn btn-secondary">导出</button>
+    </div>
   </div>
 
   <!-- PC端布局 -->
@@ -797,32 +788,21 @@
     <div class="pc-sidebar">
       <div class="pc-menu-section">
         <div class="pc-menu-title">订单管理</div>
-        <div class="pc-menu-item">📋 订单列表</div>
-        <div class="pc-menu-item">📦 物流管理</div>
-        <div class="pc-menu-item">📤 打单发货</div>
-        <div class="pc-menu-item active">📑 发货记录<span class="pc-menu-badge">3</span></div>
-        <div class="pc-menu-item">📊 数据统计</div>
+        <div class="pc-menu-item"><span class="pc-menu-icon"></span>订单列表</div>
+        <div class="pc-menu-item"><span class="pc-menu-icon"></span>物流管理</div>
+        <div class="pc-menu-item"><span class="pc-menu-icon"></span>打单发货</div>
+        <div class="pc-menu-item active"><span class="pc-menu-icon"></span>发货记录<span class="pc-menu-badge">3</span></div>
+        <div class="pc-menu-item"><span class="pc-menu-icon"></span>数据统计</div>
       </div>
       <div class="pc-menu-section">
         <div class="pc-menu-title">商品管理</div>
-        <div class="pc-menu-item">📦 商品列表</div>
-        <div class="pc-menu-item">🏭 供应商管理</div>
+        <div class="pc-menu-item"><span class="pc-menu-icon"></span>商品列表</div>
+        <div class="pc-menu-item"><span class="pc-menu-icon"></span>供应商管理</div>
       </div>
     </div>
 
     <!-- 主内容 -->
     <div class="pc-content">
-      <!-- 页面标题 -->
-      <div class="page-header">
-        <div>
-          <div class="page-title">发货记录</div>
-          <div class="page-breadcrumb">物流管理 → 发货记录</div>
-        </div>
-        <div class="page-actions">
-          <button class="filter-btn btn-secondary">导出</button>
-        </div>
-      </div>
-
       <!-- 统计卡片 -->
       <div class="stat-row">
         <div class="stat-card">
@@ -887,72 +867,75 @@
       <div class="table-box">
         <!-- 表头 -->
         <div class="table-head">
-          <div class="th" style="flex:0 0 120px;">发货时间</div>
-          <div class="th" style="flex:0 0 120px;">订单号</div>
+          <div class="th" style="flex:0 0 130px;">发货时间</div>
+          <div class="th" style="flex:0 0 110px;">订单号</div>
           <div class="th">供应商</div>
-          <div class="th" style="flex:0 0 80px;text-align:center;">商品数量</div>
-          <div class="th" style="flex:0 0 100px;text-align:center;">物流</div>
-          <div class="th" style="flex:0 0 130px;text-align:center;">运单号</div>
-          <div class="th" style="flex:0 0 80px;text-align:center;">状态</div>
-          <div class="th" style="flex:0 0 120px;text-align:right;">发货金额</div>
+          <div class="th center" style="flex:0 0 70px;">商品数量</div>
+          <div class="th center" style="flex:0 0 90px;">物流</div>
+          <div class="th center" style="flex:0 0 130px;">运单号</div>
+          <div class="th center" style="flex:0 0 80px;">状态</div>
+          <div class="th right" style="flex:0 0 110px;">发货金额</div>
           <div class="th op">操作</div>
         </div>
 
-        <!-- 数据行 -->
+        <!-- 行1 -->
         <div class="tr">
-          <div class="td" style="flex:0 0 120px;font-size:12px;color:#8C8C8C;">2026-05-21 14:30</div>
-          <div class="td" style="flex:0 0 120px;"><span style="color:#1664FF;font-size:12px;">DD20260521001</span></div>
-          <div class="td"><div><div class="goods-name">深圳模具钢材厂</div><div class="goods-meta">6 个商品</div></div></div>
-          <div class="td" style="flex:0 0 80px;text-align:center;font-size:12px;">6</div>
-          <div class="td" style="flex:0 0 100px;text-align:center;font-size:12px;color:#8C8C8C;">顺丰速运</div>
-          <div class="td" style="flex:0 0 130px;text-align:center;"><span style="font-size:12px;">SF1234567890</span></div>
-          <div class="td" style="flex:0 0 80px;text-align:center;"><span class="status-tag status-green">已签收</span></div>
-          <div class="td" style="flex:0 0 120px;text-align:right;font-weight:600;">¥1,590.00</div>
+          <div class="td" style="flex:0 0 130px;font-size:11px;color:#8C8C8C;">2026-05-21 14:30</div>
+          <div class="td" style="flex:0 0 110px;"><span class="td blue-link">DD20260521001</span></div>
+          <div class="td"><div><div class="goods-name-cell">深圳模具钢材厂</div><div class="goods-sub">6 个商品</div></div></div>
+          <div class="td center" style="flex:0 0 70px;font-size:11px;">6</div>
+          <div class="td center" style="flex:0 0 90px;font-size:11px;color:#8C8C8C;">顺丰速运</div>
+          <div class="td center" style="flex:0 0 130px;font-size:11px;">SF1234567890</div>
+          <div class="td center" style="flex:0 0 80px;"><span class="status-tag s-green">已签收</span></div>
+          <div class="td right bold" style="flex:0 0 110px;">¥1,590.00</div>
           <div class="td op">
             <button class="op-btn">查看详情</button>
             <button class="op-btn">打印</button>
           </div>
         </div>
 
+        <!-- 行2 -->
         <div class="tr">
-          <div class="td" style="flex:0 0 120px;font-size:12px;color:#8C8C8C;">2026-05-20 10:15</div>
-          <div class="td" style="flex:0 0 120px;"><span style="color:#1664FF;font-size:12px;">DD20260520003</span></div>
-          <div class="td"><div><div class="goods-name">东莞五金厂</div><div class="goods-meta">3 个商品</div></div></div>
-          <div class="td" style="flex:0 0 80px;text-align:center;font-size:12px;">3</div>
-          <div class="td" style="flex:0 0 100px;text-align:center;font-size:12px;color:#8C8C8C;">中通快递</div>
-          <div class="td" style="flex:0 0 130px;text-align:center;"><span style="font-size:12px;">ZT9876543210</span></div>
-          <div class="td" style="flex:0 0 80px;text-align:center;"><span class="status-tag status-blue">运输中</span></div>
-          <div class="td" style="flex:0 0 120px;text-align:right;font-weight:600;">¥680.00</div>
+          <div class="td" style="flex:0 0 130px;font-size:11px;color:#8C8C8C;">2026-05-20 10:15</div>
+          <div class="td" style="flex:0 0 110px;"><span class="td blue-link">DD20260520003</span></div>
+          <div class="td"><div><div class="goods-name-cell">东莞五金厂</div><div class="goods-sub">3 个商品</div></div></div>
+          <div class="td center" style="flex:0 0 70px;font-size:11px;">3</div>
+          <div class="td center" style="flex:0 0 90px;font-size:11px;color:#8C8C8C;">中通快递</div>
+          <div class="td center" style="flex:0 0 130px;font-size:11px;">ZT9876543210</div>
+          <div class="td center" style="flex:0 0 80px;"><span class="status-tag s-blue">运输中</span></div>
+          <div class="td right bold" style="flex:0 0 110px;">¥680.00</div>
           <div class="td op">
             <button class="op-btn">查看详情</button>
             <button class="op-btn">打印</button>
           </div>
         </div>
 
+        <!-- 行3 - 异常 -->
         <div class="tr">
-          <div class="td" style="flex:0 0 120px;font-size:12px;color:#8C8C8C;">2026-05-19 16:45</div>
-          <div class="td" style="flex:0 0 120px;"><span style="color:#1664FF;font-size:12px;">DD20260519002</span></div>
-          <div class="td"><div><div class="goods-name">佛山铸造厂</div><div class="goods-meta">8 个商品</div></div></div>
-          <div class="td" style="flex:0 0 80px;text-align:center;font-size:12px;">8</div>
-          <div class="td" style="flex:0 0 100px;text-align:center;font-size:12px;color:#8C8C8C;">德邦物流</div>
-          <div class="td" style="flex:0 0 130px;text-align:center;"><span style="font-size:12px;">DB4567890123</span></div>
-          <div class="td" style="flex:0 0 80px;text-align:center;"><span class="status-tag status-orange">异常</span></div>
-          <div class="td" style="flex:0 0 120px;text-align:right;font-weight:600;">¥2,350.00</div>
+          <div class="td" style="flex:0 0 130px;font-size:11px;color:#8C8C8C;">2026-05-19 16:45</div>
+          <div class="td" style="flex:0 0 110px;"><span class="td blue-link">DD20260519002</span></div>
+          <div class="td"><div><div class="goods-name-cell">佛山铸造厂</div><div class="goods-sub">8 个商品</div></div></div>
+          <div class="td center" style="flex:0 0 70px;font-size:11px;">8</div>
+          <div class="td center" style="flex:0 0 90px;font-size:11px;color:#8C8C8C;">德邦物流</div>
+          <div class="td center" style="flex:0 0 130px;font-size:11px;">DB4567890123</div>
+          <div class="td center" style="flex:0 0 80px;"><span class="status-tag s-red">异常</span></div>
+          <div class="td right bold" style="flex:0 0 110px;">¥2,350.00</div>
           <div class="td op">
             <button class="op-btn">查看详情</button>
-            <button class="op-btn">处理异常</button>
+            <button class="op-btn danger">处理异常</button>
           </div>
         </div>
 
+        <!-- 行4 -->
         <div class="tr">
-          <div class="td" style="flex:0 0 120px;font-size:12px;color:#8C8C8C;">2026-05-18 09:20</div>
-          <div class="td" style="flex:0 0 120px;"><span style="color:#1664FF;font-size:12px;">DD20260518001</span></div>
-          <div class="td"><div><div class="goods-name">广州模具配件厂</div><div class="goods-meta">5 个商品</div></div></div>
-          <div class="td" style="flex:0 0 80px;text-align:center;font-size:12px;">5</div>
-          <div class="td" style="flex:0 0 100px;text-align:center;font-size:12px;color:#8C8C8C;">顺丰速运</div>
-          <div class="td" style="flex:0 0 130px;text-align:center;"><span style="font-size:12px;">SF5678901234</span></div>
-          <div class="td" style="flex:0 0 80px;text-align:center;"><span class="status-tag status-green">已签收</span></div>
-          <div class="td" style="flex:0 0 120px;text-align:right;font-weight:600;">¥980.00</div>
+          <div class="td" style="flex:0 0 130px;font-size:11px;color:#8C8C8C;">2026-05-18 09:20</div>
+          <div class="td" style="flex:0 0 110px;"><span class="td blue-link">DD20260518001</span></div>
+          <div class="td"><div><div class="goods-name-cell">广州模具配件厂</div><div class="goods-sub">5 个商品</div></div></div>
+          <div class="td center" style="flex:0 0 70px;font-size:11px;">5</div>
+          <div class="td center" style="flex:0 0 90px;font-size:11px;color:#8C8C8C;">顺丰速运</div>
+          <div class="td center" style="flex:0 0 130px;font-size:11px;">SF5678901234</div>
+          <div class="td center" style="flex:0 0 80px;"><span class="status-tag s-green">已签收</span></div>
+          <div class="td right bold" style="flex:0 0 110px;">¥980.00</div>
           <div class="td op">
             <button class="op-btn">查看详情</button>
             <button class="op-btn">打印</button>
@@ -973,26 +956,21 @@
   </div>
 
   <div class="info-box">
-    <div class="info-title">页面说明</div>
-    <div class="info-item">· 发货记录列表：查看历史发货数据（订单号/物流/运单号/状态/金额）</div>
-    <div class="info-item">· 状态标签：已签收 / 运输中 / 异常（颜色区分）</div>
-    <div class="info-item">· 操作：查看详情 / 打印 / 处理异常（异常订单才有）</div>
-    <div class="info-item">· 可跳转：发货成功后点击"继续处理" → 回到打单发货列表</div>
+    <div class="info-title">交互说明</div>
+    <div class="info-item">· 发货记录列表：查看历史发货数据（发货时间/订单号/供应商/物流/运单号/状态/金额）</div>
+    <div class="info-item">· 状态标签：已签收(绿) / 运输中(蓝) / 异常(红)</div>
+    <div class="info-item">· 操作：查看详情 / 打印 / 处理异常（异常订单才有"处理异常"按钮）</div>
+    <div class="info-item">· 发货成功后点击"继续处理" → 跳回打单发货列表继续处理下一个订单</div>
   </div>
 </div>
 
 </div>
 
 <script>
-// 页面切换
 function showPage(pageId) {
-  // 隐藏所有页面
   document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active'));
-  // 取消所有按钮高亮
   document.querySelectorAll('.page-nav-btn').forEach(b => b.classList.remove('active'));
-  // 显示目标页面
   document.getElementById('page-' + pageId).classList.add('active');
-  // 高亮对应按钮
   event.target.classList.add('active');
 }
 </script>
