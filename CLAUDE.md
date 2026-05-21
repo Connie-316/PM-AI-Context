@@ -75,6 +75,13 @@
 | `git-push.md` | "推送"、"提交"、"推送到GitHub" | GitHub 推送 |
 | `ui-demo-preview.html` | "UI规范预览"、"可视化demo" | 各端 UI 规范浏览器预览 |
 
+### Demo 文件
+
+| 文件 | 用途 |
+|------|------|
+| `ui-demo-preview.html` | 各端 UI 规范可视化预览 |
+| `ui-demo-print-label-full.html` | 打印标签+打单发货+发货记录完整页面交互 |
+
 ---
 
 ## 核心路由
