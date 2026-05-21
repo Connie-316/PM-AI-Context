@@ -14,6 +14,10 @@
 
 直接根据用户需求，在 `workspace/prd/` 下创建 PRD 文件，命名格式：`prd/[功能名称]_[日期].md`
 
+**创建后必须更新索引：**
+1. 更新 `workspace/prd/CLAUDE.md`，在文件列表中新增这一行
+2. 更新 `workspace/CLAUDE.md`，确认 prd/ 子目录已列出
+
 ## 输出模板
 
 ```markdown

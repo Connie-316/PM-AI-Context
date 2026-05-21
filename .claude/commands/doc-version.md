@@ -48,6 +48,12 @@ Step 3: 创建新版本文件，覆盖当前文件
 Step 4: 更新版本索引文件 `[文件名]_versions.md`
     ↓
 Step 5: 通知用户版本变化
+
+**Step 6: 更新相关索引**
+每次生成新版本后，必须检查并更新：
+- 如果是 workspace/prd/ 下的文件 → 更新 workspace/prd/CLAUDE.md
+- 如果是 context/ 下的文件 → 更新对应目录的 CLAUDE.md
+- 如果新增了 history/ 条目 → 确认 history/ 目录被索引记录
 ```
 
 ### 版本索引文件格式

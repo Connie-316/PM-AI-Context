@@ -87,8 +87,9 @@ drafts/      →  workspace/prd/  →  context/
 归档完成后，自动更新：
 
 1. `context/02_功能模块/CLAUDE.md` — 新增功能索引
-2. `CLAUDE.md` — 如有必要更新
-3. `.claude/SESSION_REPLAY.md` — 无需更新（这是工作记录，不关归档的事）
+2. `workspace/prd/CLAUDE.md` — 标注该 PRD 为"已归档"
+3. `CLAUDE.md` — 如有必要更新
+4. `.claude/SESSION_REPLAY.md` — 无需更新（这是工作记录，不关归档的事）
 
 ---
 
