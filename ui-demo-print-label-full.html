@@ -153,20 +153,26 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
 
 /* Tab行 */
 .modal-tab-row { display: flex; align-items: center; padding: 10px 20px; border-bottom: 1px solid #F0F0F0; flex-shrink: 0; }
-.modal-tab { font-size: 12px; color: #8C8C8C; padding: 6px 12px; cursor: pointer; border-radius: 4px; margin-right: 8px; transition: all 0.15s; display: flex; align-items: center; gap: 5px; }
+.modal-tab { font-size: 12px; color: #8C8C8C; padding: 6px 12px; cursor: pointer; border-radius: 4px; margin-right: 6px; transition: all 0.15s; }
 .modal-tab:hover { background: #F5F5F5; color: #333; }
 .modal-tab.active { background: #1664FF; color: #fff; }
 .modal-tab .cnt { font-size: 10px; opacity: 0.7; }
+.modal-right-actions { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+
+/* 反选按钮 */
+.reverse-btn { display: flex; align-items: center; gap: 4px; font-size: 11px; color: #1664FF; background: transparent; border: 1px solid #D9D9D9; cursor: pointer; padding: 5px 10px; border-radius: 4px; transition: all 0.15s; }
+.reverse-btn:hover { background: #E8F0FF; border-color: #1664FF; }
 
 /* 全选行 */
-.select-row { display: flex; align-items: center; padding: 10px 20px; background: #FAFAFA; border-bottom: 1px solid #E5E5E5; flex-shrink: 0; }
+.select-row { display: flex; align-items: center; padding: 10px 20px; background: #FAFAFA; border-bottom: 1px solid #E5E5E5; flex-shrink: 0; gap: 12px; }
 .select-chk-wrap { display: flex; align-items: center; cursor: pointer; padding: 4px; margin: -4px; border-radius: 4px; }
 .select-chk-wrap:hover .select-chk { border-color: #1664FF; }
 .select-chk { width: 16px; height: 16px; border: 2px solid #D9D9D9; border-radius: 3px; background: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.15s; }
 .select-chk.checked { background: #1664FF; border-color: #1664FF; }
 .select-chk.checked::after { content: ''; width: 8px; height: 4px; border-left: 2px solid #fff; border-bottom: 2px solid #fff; transform: rotate(-45deg); }
-.select-text { font-size: 12px; color: #333; margin-left: 8px; }
-.select-badge { font-size: 11px; color: #8C8C8C; background: #F0F0F0; border-radius: 8px; padding: 2px 8px; margin-left: 10px; }
+.select-text { font-size: 12px; color: #333; }
+.select-badge { font-size: 11px; color: #8C8C8C; background: #F0F0F0; border-radius: 8px; padding: 2px 8px; }
+.select-right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
 
 /* 弹窗列表 */
 .modal-list { flex: 1; overflow-y: auto; }
@@ -283,9 +289,12 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
 
     <!-- Tab行 -->
     <div class="modal-tab-row">
-      <span class="modal-tab">打印标签<span class="cnt">5</span></span>
-      <span class="modal-tab">打单发货<span class="cnt">3</span></span>
-      <span class="modal-tab">发货记录<span class="cnt">8</span></span>
+      <span class="modal-tab active">全部<span class="cnt">8</span></span>
+      <span class="modal-tab">未发货<span class="cnt">5</span></span>
+      <span class="modal-tab">已发货<span class="cnt">3</span></span>
+      <div class="modal-right-actions">
+        <button class="reverse-btn" onclick="reverseSelect()">⇆ 反选</button>
+      </div>
     </div>
 
     <!-- 全选行 -->
@@ -295,6 +304,13 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
         <span class="select-text">全选</span>
       </label>
       <span class="select-badge" id="selectedCount">已选 0 个</span>
+      <div class="select-right">
+        <span class="modal-fixed-count">合计：<span class="n" id="bottomTotal">¥0.00</span></span>
+        <div class="modal-fixed-btns">
+          <button class="modal-btn modal-btn-cancel" onclick="closeModal()">取消</button>
+          <button class="modal-btn modal-btn-confirm" id="confirmBtn" onclick="confirmPrint()"><span class="icon">✓</span>确认打印</button>
+        </div>
+      </div>
     </div>
 
     <!-- 列表 -->
@@ -431,28 +447,17 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
       </div>
     </div>
 
-    <!-- 固定底部 -->
-    <div class="modal-fixed-bottom">
-      <div class="modal-fixed-left">
-        <span class="modal-fixed-count">勾选 <span class="n" id="bottomCount">0</span> 个商品</span>
-      </div>
-      <div class="modal-fixed-right">
-        <span class="modal-total">¥<span class="amt" id="bottomTotal">0.00</span></span>
-        <div class="modal-fixed-btns">
-          <button class="modal-btn modal-btn-cancel" onclick="closeModal()">取消</button>
-          <button class="modal-btn modal-btn-confirm" id="confirmBtn" onclick="confirmPrint()"><span class="icon">✓</span>确认打印</button>
-        </div>
-      </div>
-    </div>
+    <!-- 固定底部 — 已整合到全选行右侧 -->
   </div>
   </div>
 
   <div class="info-box">
     <div class="info-title">交互说明</div>
-    <div class="info-item">· 点击复选框勾选/取消勾选商品（热区 34×34px）</div>
-    <div class="info-item">· 点击"确认打印" → 自动同步到打单发货页面（已勾选状态）</div>
+    <div class="info-item">· Tab 顺序：全部 / 未发货 / 已发货（未发货优先排序）</div>
+    <div class="info-item">· 全选和反选在同一行（右侧"⇆ 反选"按钮）</div>
+    <div class="info-item">· 复选框热区 34×34px，点击切换勾选状态</div>
+    <div class="info-item">· 点击"确认打印" → 确认提交后，商品自动同步到打单发货页面（已勾选状态）</div>
     <div class="info-item">· 已发货商品：灰色背景 + 删除线 + "已发货"标签 + 复选框禁用</div>
-    <div class="info-item">· Tab 切换：打印标签 / 打单发货 / 发货记录</div>
   </div>
 </div>
 
@@ -539,8 +544,8 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
         <button class="filter-btn btn-secondary">重置</button>
       </div>
 
-      <!-- 同步提示条 -->
-      <div class="sync-tip">
+      <!-- 同步提示条（确认打印后显示） -->
+      <div class="sync-tip" id="syncTipBar" style="display:none;">
         <span class="sync-icon">↻</span>
         <strong>2</strong> 个商品已从"打印标签"同步勾选（订单号: 2306202302）
       </div>
@@ -887,17 +892,41 @@ function showPage(pageId) {
   event.target.classList.add('active');
 }
 
-// 切换勾选状态
-function toggleCheck(btn) {
-  if (btn.classList.contains('disabled') || btn.parentElement.classList.contains('disabled')) return;
-
-  btn.classList.toggle('checked');
-  var tr = btn.closest('.modal-tr, .tr');
-  if (tr) {
-    tr.classList.toggle('selected', btn.classList.contains('checked'));
-  }
+// 反选功能
+function reverseSelect() {
+  var checkables = document.querySelectorAll('.modal-tr:not(.shipped) .check-btn:not(.disabled)');
+  checkables.forEach(function(btn) {
+    btn.classList.toggle('checked');
+    var tr = btn.closest('.modal-tr');
+    if (tr) {
+      tr.classList.toggle('selected', btn.classList.contains('checked'));
+    }
+  });
   updateCounts();
 }
+
+// 切换全选
+function toggleSelectAll(btn) {
+  var isChecked = btn.classList.toggle('checked');
+  var checkables = document.querySelectorAll('.modal-tr:not(.shipped) .check-btn:not(.disabled)');
+  checkables.forEach(function(b) {
+    if (isChecked) {
+      b.classList.add('checked');
+    } else {
+      b.classList.remove('checked');
+    }
+    var tr = b.closest('.modal-tr');
+    if (tr) {
+      tr.classList.toggle('selected', isChecked);
+    }
+  });
+  updateCounts();
+}
+
+// 全选行点击
+document.getElementById('selectAllChk').addEventListener('click', function() {
+  toggleSelectAll(this);
+});
 
 // 更新计数
 function updateCounts() {
@@ -915,8 +944,7 @@ function updateCounts() {
   });
 
   document.getElementById('selectedCount').textContent = '已选 ' + count + ' 个';
-  document.getElementById('bottomCount').textContent = count;
-  document.getElementById('bottomTotal').textContent = total.toFixed(2);
+  document.getElementById('bottomTotal').textContent = '¥' + total.toFixed(2);
 
   // 更新全选
   var allCheckable = document.querySelectorAll('.modal-tr:not(.shipped) .check-btn:not(.disabled)');
@@ -927,24 +955,19 @@ function updateCounts() {
   }
 }
 
-// 关闭弹窗
-function closeModal() {
-  // 在实际场景中关闭弹窗
-  alert('关闭打印标签弹窗');
-}
-
 // 确认打印
 function confirmPrint() {
-  var count = parseInt(document.getElementById('bottomCount').textContent) || 0;
+  var count = parseInt(document.getElementById('selectedCount').textContent.replace('已选 ', '').replace(' 个', '')) || 0;
   if (count === 0) {
     alert('请先勾选要打印的商品');
     return;
   }
-  alert('确认打印 ' + count + ' 个商品，已同步到打单发货页面');
-  // 实际场景中切换到打单发货页面
+  // 确认后切换到打单发货页面，显示同步说明
   showPage('ship-order');
   document.querySelectorAll('.page-nav-btn')[1].classList.add('active');
   document.querySelectorAll('.page-nav-btn')[0].classList.remove('active');
+  // 显示同步提示条
+  document.getElementById('syncTipBar').style.display = 'flex';
 }
 </script>
 
